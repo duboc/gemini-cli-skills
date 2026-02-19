@@ -13,6 +13,7 @@ A collection of reusable skills for [Gemini CLI](https://github.com/google-gemin
 | [agent-engine-ops](skills/agent-engine-ops/) | Monitor, trace, secure, and evaluate agents on Vertex AI Agent Engine | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- agent-engine-ops` |
 | [zen-presenter](skills/zen-presenter/) | Generate MARP presentation decks following Presentation Zen principles with interactive design consultation | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- zen-presenter` |
 | [marp-to-slides](skills/marp-to-slides/) | Convert MARP Markdown presentations to Google Slides with Google brand colors and Material Design conventions | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- marp-to-slides` |
+| [ai-studio-architect](skills/ai-studio-architect/) | Convert AI Studio Build mode prototypes to production on GCP with auto-generated infrastructure scripts | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- ai-studio-architect` |
 
 ## Installation
 
