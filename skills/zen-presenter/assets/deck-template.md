@@ -1,52 +1,48 @@
 ---
 marp: true
-theme: uncover
-class: lead
-color: white
+theme: gcloud
 ---
 
-![bg brightness:0.3](https://source.unsplash.com/featured/?zen,garden)
+<!-- _class: title -->
 
 # Your Title Here
 ### A subtitle that whispers
 
 ---
 
-![bg brightness:0.4](https://source.unsplash.com/featured/?storm,clouds)
-
 # The Problem.
 Something needs to change.
 
 ---
 
-![bg brightness:0.3](https://source.unsplash.com/featured/?path,forest)
+<!-- _class: section -->
 
-# One Idea.
-Let it breathe.
+# One Core Idea
 
 ---
-
-![bg brightness:0.3](https://source.unsplash.com/featured/?light,window)
 
 # Another Idea.
 Each slide stands alone.
 
 ---
 
-![bg brightness:0.35](https://source.unsplash.com/featured/?summit,mountain)
+<!-- _class: quote -->
+
+> "The best slides say less,
+> not more."
+>
+> — Garr Reynolds
+
+---
+
+<!-- _class: invert -->
 
 # The Turning Point.
 This is what matters most.
 
 ---
 
-![bg brightness:0.3](https://source.unsplash.com/featured/?horizon,dawn)
+<!-- _class: closing -->
 
 # What Changes Now.
 Your call to action.
-
----
-
-![bg brightness:0.3](https://source.unsplash.com/featured/?stars,night)
-
-# Thank You.

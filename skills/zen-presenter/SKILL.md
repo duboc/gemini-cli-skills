@@ -1,6 +1,6 @@
 ---
 name: zen-presenter
-description: Generate MARP presentation decks following Presentation Zen principles — minimal text, high visual impact, storytelling-driven slides with interactive design consultation
+description: Generate MARP presentation decks following Presentation Zen principles — minimal text, high visual impact, storytelling-driven slides with interactive design consultation and customizable themes
 ---
 
 # Zen Presenter
@@ -16,7 +16,7 @@ When a user asks you to create a presentation, slide deck, or MARP file:
 1. Determine the topic and audience.
 2. Run the **Design Consultation** workflow to understand their visual preferences.
 3. Generate the deck following the **Zen Generation Rules**.
-4. Save the output as a `.md` file.
+4. Save the output as a `.md` file and the theme CSS alongside it.
 
 ## Workflow
 
@@ -36,7 +36,43 @@ If the user provides a topic directly without details, ask these questions befor
 
 Before generating any slides, ask the user about their preferred look and feel. Present these choices clearly:
 
-#### Mood
+#### Theme
+
+Ask: "Would you like to use a visual theme for the slides?"
+
+| Option | Description |
+|--------|-------------|
+| **Google Cloud** | Clean, professional Google Cloud styling with Inter font, Google colors, and structured layouts (default) |
+| **Keynote Zen** | Classic Garr Reynolds — dark backgrounds, nature imagery, white text |
+| **Corporate Bold** | Professional with architectural photography and strong contrast |
+| **Warm Storyteller** | Emotional, people-focused, quote-driven |
+| **Clean Minimalist** | Bright, airy, Scandinavian-inspired |
+| **Tech Neon** | High-energy, modern with cyan accents on dark |
+| **Earth & Organic** | Grounded, natural, sustainability-focused |
+| **Playful Creative** | Vibrant, energetic, creative |
+
+If the user selects **Google Cloud**, use the custom `gcloud` theme CSS from `assets/gcloud-theme.css`. Copy the theme CSS file alongside the generated deck so it can be referenced.
+
+For all other themes, use the built-in MARP themes (`uncover`, `default`, `gaia`) as specified in `references/visual-themes.md`.
+
+#### Background Images
+
+Ask: "Should the slides use full-bleed background images?"
+
+| Option | Description |
+|--------|-------------|
+| **Yes, with images** | Every slide gets a full-bleed Unsplash background image with visual metaphors (classic Zen style) |
+| **No, clean design** | Slides use the theme's typography, colors, and layout without background images (recommended for Google Cloud theme) |
+
+If the user selects **No, clean design**:
+- Do **not** include any `![bg ...]` image directives.
+- Rely on the theme's styling, typography, and color for visual impact.
+- Use slide type classes (e.g., `title`, `section`, `stats`, `quote`, `closing`) to create visual variety.
+- Maintain the Zen principles of restraint and one-idea-per-slide.
+
+If the user selects **Yes, with images**, proceed to the Image Style and Color Scheme questions below.
+
+#### Mood (All themes)
 
 Ask: "What mood should the presentation convey?"
 
@@ -58,7 +94,7 @@ Ask: "What typography style do you prefer?"
 | **Statement** | One bold sentence per slide, centered |
 | **Quote-driven** | Mix of original statements and attributed quotes |
 
-#### Image Style
+#### Image Style (Only when using background images)
 
 Ask: "What kind of imagery should dominate?"
 
@@ -70,7 +106,7 @@ Ask: "What kind of imagery should dominate?"
 | **Abstract & Texture** | Patterns, gradients, close-up textures |
 | **Topic-specific** | Images directly related to the subject matter |
 
-#### Color Scheme
+#### Color Scheme (Only when using background images)
 
 Ask: "What color scheme for the text?"
 
@@ -80,7 +116,7 @@ Ask: "What color scheme for the text?"
 | **Dark on light** | Dark text over bright, airy backgrounds |
 | **Accent color** | White text with one accent color for emphasis |
 
-If the user says "you decide" or "surprise me," default to: **Calm** mood, **Statement** typography, **Nature & Landscape** imagery, **White on dark** color scheme.
+If the user says "you decide" or "surprise me," default to: **Google Cloud** theme, **No images**, **Professional** mood, **Statement** typography.
 
 Record the user's choices and apply them consistently across all slides.
 
@@ -88,12 +124,12 @@ Record the user's choices and apply them consistently across all slides.
 
 Before writing any MARP code, plan the narrative arc. Every Zen deck tells a story:
 
-1. **Opening** — Hook the audience. Start with a striking image and a provocative question or bold statement.
+1. **Opening** — Hook the audience. Start with a striking statement or bold claim.
 2. **Tension** — Present the problem, challenge, or gap. Make the audience feel why this matters.
 3. **Exploration** — Walk through key ideas. One idea per slide. No more.
 4. **Climax** — The core insight or turning point. This is the slide the audience will remember.
 5. **Resolution** — The takeaway. What should the audience do, think, or feel differently?
-6. **Closing** — End with resonance. A final image, a call to action, or a moment of reflection.
+6. **Closing** — End with resonance. A call to action or a moment of reflection.
 
 ### Step 4: Generate the MARP Deck
 
@@ -107,6 +143,7 @@ These rules are non-negotiable. Every slide must comply.
 
 - Output valid MARP Markdown.
 - Begin every deck with the MARP directive block. Select the theme and class based on the user's design consultation choices.
+- When using the `gcloud` custom theme, include `theme: gcloud` in the frontmatter.
 - Separate slides with `---` on its own line.
 
 ### Signal vs. Noise
@@ -117,12 +154,26 @@ These rules are non-negotiable. Every slide must comply.
 - **No sub-bullets, nested lists, or tables** on slides.
 - **No filler words.** Every word must earn its place.
 
-### Picture Superiority
+### Picture Superiority (When images are enabled)
 
 - Every slide **must** have a full-bleed background image.
 - Use Unsplash source URLs: `![bg brightness:0.4](https://source.unsplash.com/featured/?KEYWORD)`
 - Replace `KEYWORD` with a visual metaphor relevant to the slide's message — not a literal description.
 - Adjust `brightness` between `0.2` and `0.5` depending on the color scheme choice.
+
+### Clean Design (When images are disabled)
+
+- Do **not** include any `![bg ...]` directives.
+- Use per-slide class directives to create visual variety:
+  - `<!-- _class: title -->` for title/opening slides
+  - `<!-- _class: section -->` for section dividers (blue background)
+  - `<!-- _class: lead -->` for centered emphasis slides
+  - `<!-- _class: stats -->` for data/numbers slides
+  - `<!-- _class: quote -->` for quotation slides
+  - `<!-- _class: invert -->` for dark background slides
+  - `<!-- _class: closing -->` for the final slide
+- Alternate between standard (white) and accent (section, invert) backgrounds to create rhythm.
+- Use **bold** (`**text**`) for accent color highlights within the theme.
 
 ### Typography
 
@@ -130,7 +181,7 @@ These rules are non-negotiable. Every slide must comply.
 - Center text visually. Use MARP's `class: lead` or alignment directives.
 - For emphasis, use **bold** sparingly — one word per slide maximum.
 
-### Visual Metaphor
+### Visual Metaphor (When images are enabled)
 
 - Choose image keywords that are **metaphorical**, not literal.
   - Topic "teamwork" → keyword `rowing` or `orchestra`, not `teamwork`.
@@ -139,27 +190,39 @@ These rules are non-negotiable. Every slide must comply.
 
 ### Consistency
 
-- Maintain the same brightness level across all slides.
-- Use the same text color throughout (do not alternate).
+- When using images: maintain the same brightness level across all slides.
+- Maintain the same text color throughout (do not alternate), except when using slide type classes that define their own colors (e.g., `section`, `invert`).
 - Keep the same heading level for slide text across the deck.
 
-Refer to `references/marp-syntax-guide.md` for MARP formatting details and `references/zen-design-principles.md` for deeper Presentation Zen philosophy.
+Refer to `references/marp-syntax-guide.md` for MARP formatting details, `references/zen-design-principles.md` for deeper Presentation Zen philosophy, and `references/visual-themes.md` for theme presets.
 
 ### Step 5: Save and Present
 
 - Save the generated MARP Markdown to a file. Default filename: `zen-slides.md`. Use the topic as the filename if appropriate (e.g., `cloud-architecture-zen.md`).
+- If using the `gcloud` custom theme, **also copy the theme CSS file** alongside the deck:
+  - Copy `assets/gcloud-theme.css` to the same directory as the generated `.md` file (or to the user's working directory).
 - Tell the user how to view the slides:
-  - **VS Code**: Install the "Marp for VS Code" extension and open the `.md` file.
-  - **CLI**: Use `marp zen-slides.md --html` to export to HTML.
-  - **PDF**: Use `marp zen-slides.md --pdf` to export to PDF.
+  - **VS Code**: Install the "Marp for VS Code" extension, open the `.md` file, and if using a custom theme, add the CSS file path to workspace settings under `markdown.marp.themes`.
+  - **CLI**: Use `marp zen-slides.md --html --theme gcloud-theme.css` to export to HTML with the custom theme.
+  - **PDF**: Use `marp zen-slides.md --pdf --theme gcloud-theme.css` to export to PDF.
+
+#### VS Code Custom Theme Setup (for gcloud theme)
+
+When using the `gcloud` theme, instruct the user:
+
+1. Open VS Code workspace settings (F1 → "Preferences: Open Workspace Settings")
+2. Search for "Marp: Themes"
+3. Add the path to `gcloud-theme.css` (e.g., `./gcloud-theme.css`)
+4. The `theme: gcloud` directive in the Markdown frontmatter will now resolve correctly.
 
 ## Output Format
 
 The final output must be:
 
-1. A brief summary of the design choices made (mood, typography, imagery, colors).
-2. The complete MARP Markdown content written to a file.
-3. Instructions for viewing/exporting.
+1. A brief summary of the design choices made (theme, images on/off, mood, typography).
+2. The custom theme CSS file (if applicable), saved alongside the deck.
+3. The complete MARP Markdown content written to a file.
+4. Instructions for viewing/exporting, including custom theme setup if needed.
 
 ## Quick Reference
 
@@ -167,13 +230,14 @@ The final output must be:
 |-----------|------|
 | **Text limit** | 10 words per slide maximum |
 | **Bullets** | Never. Zero. None. |
-| **Images** | Full-bleed background on every slide |
-| **Image source** | Unsplash via `source.unsplash.com/featured/?KEYWORD` |
-| **Keywords** | Metaphorical, not literal |
+| **Images** | Only when user opts in; full-bleed backgrounds with metaphorical keywords |
+| **Clean design** | When no images: use theme classes for visual variety |
+| **Default theme** | Google Cloud (`gcloud`) |
+| **Image source** | Unsplash via `source.unsplash.com/featured/?KEYWORD` (when enabled) |
+| **Keywords** | Metaphorical, not literal (when images enabled) |
 | **Story** | Every deck follows a narrative arc |
 | **Slides** | One idea per slide |
-| **Brightness** | `0.2`–`0.5` depending on text color |
-| **Consultation** | Always ask about mood, typography, imagery, and colors first |
+| **Consultation** | Always ask about theme, images, mood, and typography first |
 
 ## Guidelines
 
@@ -182,5 +246,34 @@ The final output must be:
 - **Empty space is intentional.** Ma (negative space) is a feature, not a bug.
 - **No apologies.** Never add "Questions?" slides. If the user wants one, they will ask.
 - **Consult first.** Always run the Design Consultation before generating. Do not assume preferences.
-- **Metaphor over literal.** A slide about "security" shows a fortress, not a padlock icon.
+- **Metaphor over literal.** A slide about "security" shows a fortress, not a padlock icon (when images are enabled).
+- **Theme consistency.** When using clean design, let the theme's typography and color palette do the visual work.
 - **Adapt to audience.** Executive decks are sparser. Technical decks may use slightly more text (still under 10 words).
+
+## Slide Type Classes (gcloud theme)
+
+When using the `gcloud` theme without background images, use these classes to create visual variety:
+
+| Class | Usage | Visual Effect |
+|-------|-------|---------------|
+| `title` | Opening slide | Large title, Google gradient bar at bottom |
+| `section` | Section dividers | Blue background, white text |
+| `lead` | Centered emphasis | Centered content |
+| `stats` | Numbers/data | Blue accent numbers |
+| `speaker` | Bio/introduction | Blue accent name |
+| `quote` | Quotations | Large quote text, attribution |
+| `invert` | Dark emphasis | Dark background, light text, blue accents |
+| `closing` | Final slide | Centered, Google gradient bar at bottom |
+| *(default)* | Standard content | White background, dark text |
+
+### Example: gcloud theme slide with class
+
+```markdown
+---
+
+<!-- _class: section -->
+
+# Cloud-Native Architecture
+```
+
+This produces a blue-background section divider slide.

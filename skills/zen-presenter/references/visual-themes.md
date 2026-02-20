@@ -4,6 +4,63 @@ Pre-defined visual theme combinations for the Design Consultation workflow. Each
 
 ## Theme Presets
 
+### Google Cloud (Default)
+
+Clean, professional Google Cloud styling. Uses a custom Marp theme (`gcloud`) with structured slide types, Google colors, and Inter font. Best used **without** background images — relies on typography, color, and layout classes for visual impact.
+
+| Attribute | Value |
+|-----------|-------|
+| Mood | Professional |
+| Typography | Statement |
+| Imagery | None (clean design) |
+| Colors | Dark text on white, blue accents |
+| Theme | `gcloud` (custom CSS) |
+| Class | Varies by slide type |
+| Font | Inter, Google Sans, Roboto |
+
+**Frontmatter:**
+```markdown
+---
+marp: true
+theme: gcloud
+---
+```
+
+**Slide type classes available:**
+- `title` — Opening slide with large headline, Google gradient bar at bottom
+- `section` — Blue background section divider
+- `lead` — Centered emphasis content
+- `stats` — Numbers and data with blue accent
+- `speaker` — Speaker bio/introduction
+- `quote` — Large quotation with attribution
+- `invert` — Dark background with light text
+- `closing` — Centered closing with Google gradient bar
+- *(no class)* — Standard white content slide
+
+**Color palette (CSS variables):**
+- `--gcloud-blue: #4285F4`
+- `--gcloud-red: #EA4335`
+- `--gcloud-yellow: #FBBC05`
+- `--gcloud-green: #34A853`
+- `--gcloud-grey-900: #202124` (primary text)
+- `--gcloud-grey-700: #5F6368` (secondary text)
+- `--gcloud-light-blue: #5C92F6` (accent numbers)
+
+**Example deck structure:**
+```
+Slide 1: <!-- _class: title --> — Title + subtitle
+Slide 2: (default) — Context/problem statement
+Slide 3: <!-- _class: section --> — Section divider
+Slide 4: (default) — Key idea
+Slide 5: <!-- _class: stats --> — Supporting data
+Slide 6: <!-- _class: quote --> — Memorable quote
+Slide 7: <!-- _class: closing --> — Call to action
+```
+
+**Setup:** Requires the `gcloud-theme.css` file to be registered in VS Code workspace settings under `markdown.marp.themes`, or passed via `--theme gcloud-theme.css` when using the Marp CLI.
+
+---
+
 ### Keynote Zen
 
 The classic Garr Reynolds look. Minimalist, high-impact, nature-inspired.
@@ -212,8 +269,15 @@ backgroundColor: #1a1a2e
 
 When a user selects options during the Design Consultation that match a preset, apply the preset's frontmatter and image keywords as a starting point. Adjust as needed based on the specific topic.
 
+**Default behavior:** If the user says "you decide" or "surprise me," use the **Google Cloud** preset without background images. This produces a clean, professional deck that works well for most audiences.
+
+**With images:** The Google Cloud theme can also be used with background images. When images are enabled, use `![bg brightness:0.3]` directives as normal — the theme styling will still apply to text, and slide type classes remain available.
+
+**Without images (any theme):** When the user opts out of background images, any theme can be used in clean-design mode. Use slide type classes, alternate between white and accent backgrounds, and let typography carry the visual weight.
+
 If a user's choices don't match any preset exactly, compose a custom theme by mixing attributes from the closest presets. Always maintain internal consistency:
 - Dark backgrounds pair with light text
 - Light backgrounds pair with dark text
-- Brightness values must match the color scheme
-- Image keywords should complement the mood
+- Brightness values must match the color scheme (when images are enabled)
+- Image keywords should complement the mood (when images are enabled)
+- Slide type classes create visual rhythm when images are disabled

@@ -20,9 +20,12 @@ backgroundColor: black
 
 | Theme | Description | Best For |
 |-------|-------------|----------|
+| `gcloud` | Google Cloud styling with structured layouts (custom) | Professional, clean design (default) |
 | `default` | Clean, neutral styling | General purpose |
-| `uncover` | Bold, full-bleed image support | Zen presentations (recommended) |
+| `uncover` | Bold, full-bleed image support | Zen presentations with images |
 | `gaia` | Modern, colorful | Playful or vibrant decks |
+
+**Note:** The `gcloud` theme is a custom CSS theme provided by this skill. See the "Custom Themes" section below for setup instructions.
 
 ### Global Directives
 
@@ -196,6 +199,61 @@ https://source.unsplash.com/random/?KEYWORD
 | `marp deck.md --pptx` | PowerPoint file |
 | `marp deck.md --html` | HTML with inline assets |
 | `marp deck.md --preview` | Open in browser |
+
+## Custom Themes
+
+Marp supports custom CSS themes. This skill includes the `gcloud` theme (`assets/gcloud-theme.css`).
+
+### Custom Theme CSS Structure
+
+A custom Marp theme CSS file must start with a `@theme` comment:
+
+```css
+/* @theme your-theme-name */
+
+@import 'default';
+
+/* Your custom styles */
+h1 {
+  color: #4285F4;
+}
+```
+
+The `@import` line inherits from a built-in theme (`default`, `uncover`, or `gaia`).
+
+### Using Custom Themes in VS Code
+
+1. Copy the theme CSS file to your workspace (e.g., `gcloud-theme.css`).
+2. Open VS Code workspace settings (F1 → "Preferences: Open Workspace Settings").
+3. Search for "Marp: Themes".
+4. Add the relative path to the CSS file (e.g., `./gcloud-theme.css`).
+5. Use `theme: gcloud` in the Markdown frontmatter.
+
+### Using Custom Themes with Marp CLI
+
+Pass the `--theme` flag:
+
+```bash
+marp deck.md --html --theme ./gcloud-theme.css
+marp deck.md --pdf --theme ./gcloud-theme.css
+```
+
+### Slide Type Classes (gcloud theme)
+
+The `gcloud` theme provides per-slide classes for visual variety without background images:
+
+```markdown
+<!-- _class: title -->     <!-- Title slide with gradient bar -->
+<!-- _class: section -->   <!-- Blue background section divider -->
+<!-- _class: lead -->      <!-- Centered content -->
+<!-- _class: stats -->     <!-- Numbers with blue accent -->
+<!-- _class: speaker -->   <!-- Speaker bio layout -->
+<!-- _class: quote -->     <!-- Large quotation -->
+<!-- _class: invert -->    <!-- Dark background -->
+<!-- _class: closing -->   <!-- Closing slide with gradient bar -->
+```
+
+Use `<!-- _class: ... -->` to set the class for a single slide (note the underscore prefix for per-slide directives).
 
 ## MARP CLI Installation
 

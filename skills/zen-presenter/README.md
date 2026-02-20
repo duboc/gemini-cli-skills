@@ -7,10 +7,10 @@ A Gemini CLI skill for generating MARP presentation decks that follow the **Pres
 This skill transforms any topic into a visually striking slide deck by applying Garr Reynolds' Presentation Zen principles. It guides Gemini through:
 
 1. **Topic discovery** — Captures the subject, audience, and core takeaway.
-2. **Design consultation** — Asks about mood, typography, imagery, and color preferences before generating anything.
+2. **Design consultation** — Asks about theme, background images (optional), mood, and typography preferences before generating anything.
 3. **Story arc planning** — Structures the deck as a narrative: hook, tension, exploration, climax, resolution.
-4. **Zen slide generation** — Produces MARP Markdown with full-bleed Unsplash backgrounds, maximum 10 words per slide, and zero bullet points.
-5. **Export guidance** — Provides instructions for viewing in VS Code, HTML, or PDF.
+4. **Zen slide generation** — Produces MARP Markdown with maximum 10 words per slide, zero bullet points, and either full-bleed Unsplash backgrounds or clean theme-based design.
+5. **Export guidance** — Provides instructions for viewing in VS Code, HTML, or PDF, including custom theme setup.
 
 ## When Does It Activate?
 
@@ -29,10 +29,11 @@ The skill activates when you ask Gemini to create presentations, slides, or deck
 | Area | Details |
 |------|---------|
 | **Presentation Zen** | Restraint (Kanso), Naturalness (Shizen), Emptiness (Ma), signal-to-noise ratio |
-| **MARP Markdown** | Frontmatter directives, background images, filters, themes, export commands |
-| **Visual Design** | Mood presets, typography styles, color schemes, image metaphor selection |
+| **MARP Markdown** | Frontmatter directives, background images, filters, themes, custom themes, export commands |
+| **Visual Design** | Mood presets, typography styles, color schemes, image metaphor selection, slide type classes |
 | **Story Structure** | Narrative arcs, audience adaptation, hook-tension-climax-resolution |
-| **Theme Presets** | Keynote Zen, Corporate Bold, Warm Storyteller, Clean Minimalist, Tech Neon, Earth & Organic, Playful Creative |
+| **Theme Presets** | Google Cloud (default), Keynote Zen, Corporate Bold, Warm Storyteller, Clean Minimalist, Tech Neon, Earth & Organic, Playful Creative |
+| **Background Images** | Optional — user chooses whether to use full-bleed Unsplash images or clean theme-based design |
 
 ## Installation
 
@@ -77,11 +78,18 @@ I need a Zen-style presentation about data privacy for an executive audience.
 The one takeaway should be: "Privacy is a competitive advantage, not a cost."
 ```
 
-### Specifying visual preferences
+### Clean design (no background images)
 
 ```
-Generate MARP slides about sustainable engineering. I want a calm mood,
-nature imagery, and white text on dark backgrounds. Around 8 slides.
+Generate slides about cloud-native architecture using the Google Cloud theme,
+no background images. Professional mood, around 8 slides.
+```
+
+### With background images
+
+```
+Create a presentation about sustainable engineering with full-bleed nature
+images, calm mood, and white text on dark backgrounds. Around 8 slides.
 ```
 
 ### Quick deck with defaults
@@ -97,16 +105,42 @@ Create a presentation about our Q3 roadmap that will be shared as a PDF,
 not presented live. It needs to be self-explanatory.
 ```
 
+## Custom Theme: Google Cloud
+
+The skill includes a custom Marp CSS theme (`gcloud-theme.css`) styled after the Google Cloud visual identity. Features:
+
+- **Inter / Google Sans** font family
+- **Google color palette** (blue, red, yellow, green)
+- **Slide type classes** for visual variety without images: `title`, `section`, `lead`, `stats`, `speaker`, `quote`, `invert`, `closing`
+- **Google gradient bar** on title and closing slides
+- Clean, professional look suitable for most audiences
+
+### Setting up the custom theme in VS Code
+
+1. Copy `gcloud-theme.css` to your workspace
+2. Open workspace settings (F1 → "Preferences: Open Workspace Settings")
+3. Search "Marp: Themes" and add the path `./gcloud-theme.css`
+4. Use `theme: gcloud` in your Markdown frontmatter
+
+### Using with Marp CLI
+
+```bash
+marp slides.md --html --theme ./gcloud-theme.css
+marp slides.md --pdf --theme ./gcloud-theme.css
+```
+
 ## Included References
 
 | File | Description |
 |------|-------------|
-| **marp-syntax-guide.md** | Complete MARP Markdown syntax reference — frontmatter, background images, filters, themes, export commands |
+| **marp-syntax-guide.md** | Complete MARP Markdown syntax reference — frontmatter, background images, filters, themes, custom themes, export commands |
 | **zen-design-principles.md** | Presentation Zen philosophy — restraint, naturalness, emptiness, visual metaphor guide, story arc structure |
-| **visual-themes.md** | Seven pre-defined visual theme presets with frontmatter, image keywords, and styling attributes |
+| **visual-themes.md** | Eight pre-defined visual theme presets including Google Cloud default |
 
 ## Included Assets
 
 | File | Description |
 |------|-------------|
-| **deck-template.md** | A starter MARP template following Zen principles — 7 slides with story arc structure |
+| **gcloud-theme.css** | Custom Marp CSS theme with Google Cloud styling and slide type classes |
+| **deck-template.md** | Starter template using the gcloud theme (clean design, no images) |
+| **deck-template-images.md** | Starter template with full-bleed Unsplash background images |
