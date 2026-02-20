@@ -1,6 +1,6 @@
 # Clarity Presenter
 
-A Gemini CLI skill for generating MARP presentation decks using the **SCQA** (Situation-Complication-Question-Answer) narrative framework with **assertion-evidence** slide design and **dual-perspective** paired slides for mixed technical and business audiences.
+A Gemini CLI skill for generating MARP presentation decks using the **SCQA** (Situation-Complication-Question-Answer) narrative framework with **assertion-evidence** slide design and **dual-perspective** paired slides for mixed technical and business audiences. Outputs MARP Markdown, HTML slides, and PowerPoint.
 
 ## What It Does
 
@@ -11,7 +11,9 @@ This skill transforms any technical topic into a structured slide deck that brid
 3. **SCQA story arc planning** — Maps content to the Situation-Complication-Question-Answer narrative framework.
 4. **Dual-perspective concept mapping** — Plans technical (how) and business (why) assertion headlines for each concept.
 5. **Assertion-evidence slide generation** — Produces MARP Markdown with sentence headlines (8-15 words), not topic labels, backed by visual evidence.
-6. **Export guidance** — Provides instructions for viewing in VS Code, HTML, or PDF, including custom theme setup.
+6. **HTML slide conversion** — Converts each MARP slide into a standalone HTML file with proper dimensions and dual-perspective styling for PowerPoint conversion.
+7. **PowerPoint generation** — Uses `html2pptx` to convert HTML slides into a `.pptx` file with accurate positioning, shapes, and formatting.
+8. **Export guidance** — Provides instructions for all output formats: MARP Markdown, HTML, PowerPoint, and PDF.
 
 ## When Does It Activate?
 
@@ -138,6 +140,23 @@ marp slides.md --html --theme ./gcloud-theme.css
 marp slides.md --pdf --theme ./gcloud-theme.css
 ```
 
+## PowerPoint Output
+
+The skill automatically generates a `.pptx` file alongside the MARP Markdown. The pipeline:
+
+1. Each MARP slide is converted to a standalone HTML file (`slides/slide-NN.html`)
+2. The `html2pptx` library renders each HTML file and converts it to a PowerPoint slide
+3. A `generate-pptx.js` script is saved so you can regenerate the PowerPoint after editing
+
+**Requirements for PowerPoint generation** (must be globally installed):
+- `pptxgenjs`
+- `playwright`
+- `sharp`
+
+```bash
+npm install -g pptxgenjs playwright sharp
+```
+
 ## Included References
 
 | File | Description |
@@ -145,6 +164,7 @@ marp slides.md --pdf --theme ./gcloud-theme.css
 | **assertion-evidence-guide.md** | Sentence headline writing rules, evidence types, falsifiability test, good vs bad headline examples |
 | **scqa-framework-guide.md** | SCQA narrative structure, content mapping, 3 complete technical examples, anti-patterns |
 | **dual-perspective-guide.md** | 12+ technical-to-business translation patterns, audience balance adaptation, writing process for paired headlines |
+| **html2pptx-guide.md** | HTML-to-PowerPoint conversion rules — layout dimensions, supported elements, critical text rules, shape styling, and PptxGenJS API reference |
 
 ## Included Assets
 

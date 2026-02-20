@@ -1,6 +1,6 @@
 ---
 name: clarity-presenter
-description: Generate MARP presentation decks using the SCQA narrative framework and assertion-evidence slide design with dual-perspective paired slides for technical and business audiences
+description: Generate MARP presentation decks using the SCQA narrative framework and assertion-evidence slide design with dual-perspective paired slides for technical and business audiences, plus PowerPoint export via HTML
 ---
 
 # Clarity Presenter
@@ -22,6 +22,7 @@ When a user asks you to create a presentation, slide deck, or MARP file — espe
 3. Plan the **SCQA story arc** and **dual-perspective concept mapping**.
 4. Generate the deck following the **Clarity Generation Rules**.
 5. Save the output as a `.md` file and the theme CSS alongside it.
+6. Convert each slide to HTML and generate a PowerPoint file using `html2pptx`.
 
 ## Workflow
 
@@ -115,24 +116,78 @@ Follow the translation patterns in `references/dual-perspective-guide.md` to con
 
 Apply the **Clarity Generation Rules** below and produce the full MARP Markdown output.
 
-### Step 6: Save and Present
+### Step 6: Save the MARP Markdown
 
 - Save the generated MARP Markdown to a file. Use the topic as the filename (e.g., `api-security-clarity.md`).
 - **Also copy the theme CSS file** alongside the deck:
   - Copy `assets/gcloud-theme.css` to the same directory as the generated `.md` file.
-- Tell the user how to view the slides:
+
+### Step 7: Generate HTML Slides
+
+Convert each slide from the MARP deck into a standalone HTML file for PowerPoint conversion. For each slide:
+
+1. Create a self-contained HTML file with proper 16:9 dimensions (`width: 720pt; height: 405pt`).
+2. Translate the MARP styling into inline CSS:
+   - Map the theme's colors, fonts, and backgrounds to CSS properties.
+   - Apply slide type class styles (title, section, invert, lead, stats, quote, closing) as inline CSS.
+   - For dual-perspective pairs: technical slides (white bg, dark text) and business slides (dark bg, light text or blue bg, white text).
+   - Use web-safe fonts only (`Arial`, `Helvetica`, `Verdana`, etc.) — do not use custom fonts like Inter or Google Sans in the HTML.
+3. Follow the critical rules from `references/html2pptx-guide.md`:
+   - ALL text must be inside `<p>`, `<h1>`-`<h6>`, `<ul>`, or `<ol>` tags.
+   - Never use CSS gradients — rasterize to PNG with Sharp first.
+   - Backgrounds and borders only on `<div>` elements.
+   - Use `display: flex` on body.
+4. Save each slide as `slides/slide-NN.html` (e.g., `slides/slide-01.html`, `slides/slide-02.html`).
+
+### Step 8: Generate PowerPoint
+
+Use the `html2pptx` library to convert the HTML slides into a PowerPoint file:
+
+```javascript
+const pptxgen = require('pptxgenjs');
+const html2pptx = require('./html2pptx');
+const path = require('path');
+const fs = require('fs');
+
+async function createPresentation() {
+    const pptx = new pptxgen();
+    pptx.layout = 'LAYOUT_16x9';
+    pptx.title = 'Presentation Title';
+
+    // Get all slide HTML files in order
+    const slidesDir = './slides';
+    const slideFiles = fs.readdirSync(slidesDir)
+        .filter(f => f.endsWith('.html'))
+        .sort();
+
+    for (const file of slideFiles) {
+        await html2pptx(path.join(slidesDir, file), pptx);
+    }
+
+    const outputFile = 'clarity-slides.pptx';
+    await pptx.writeFile({ fileName: outputFile });
+    console.log(`PowerPoint created: ${outputFile}`);
+}
+
+createPresentation().catch(console.error);
+```
+
+Save this script as `generate-pptx.js` and run it with `node generate-pptx.js`.
+
+Refer to `references/html2pptx-guide.md` for the full API reference, validation rules, and advanced features like charts and tables.
+
+### Step 9: Present the Outputs
+
+Tell the user what was generated and how to use each format:
+
+1. **MARP Markdown** (`.md`) — Editable source. View with Marp for VS Code or export with Marp CLI.
+2. **HTML slides** (`slides/slide-NN.html`) — Intermediate format for PowerPoint conversion.
+3. **PowerPoint** (`.pptx`) — Ready to present or share. Open with PowerPoint, Google Slides, or Keynote.
+
+For MARP viewing with custom themes:
   - **VS Code**: Install the "Marp for VS Code" extension, open the `.md` file, and add the CSS file path to workspace settings under `markdown.marp.themes`.
-  - **CLI**: Use `marp slides.md --html --theme gcloud-theme.css` to export to HTML with the custom theme.
+  - **CLI**: Use `marp slides.md --html --theme gcloud-theme.css` to export to HTML.
   - **PDF**: Use `marp slides.md --pdf --theme gcloud-theme.css` to export to PDF.
-
-#### VS Code Custom Theme Setup (for gcloud theme)
-
-When using the `gcloud` theme, instruct the user:
-
-1. Open VS Code workspace settings (F1 → "Preferences: Open Workspace Settings")
-2. Search for "Marp: Themes"
-3. Add the path to `gcloud-theme.css` (e.g., `./gcloud-theme.css`)
-4. The `theme: gcloud` directive in the Markdown frontmatter will now resolve correctly.
 
 ## Clarity Generation Rules
 
@@ -199,7 +254,7 @@ These rules are non-negotiable. Every slide must comply.
 - Maintain strict technical (white) → business (dark) alternation within the Answer section.
 - Keep the same evidence depth across all concept pairs (adjusted by audience balance setting).
 
-Refer to `references/assertion-evidence-guide.md` for headline writing rules, evidence types, and the falsifiability test. Refer to `references/dual-perspective-guide.md` for translation patterns and audience balance adaptation.
+Refer to `references/assertion-evidence-guide.md` for headline writing rules, evidence types, and the falsifiability test. Refer to `references/dual-perspective-guide.md` for translation patterns and audience balance adaptation. Refer to `references/html2pptx-guide.md` for HTML-to-PowerPoint conversion rules.
 
 ### Background Images (When Enabled)
 
@@ -218,8 +273,11 @@ The final output must be:
 2. The SCQA arc outline showing the narrative structure.
 3. The dual-perspective concept mapping table.
 4. The custom theme CSS file saved alongside the deck.
-5. The complete MARP Markdown content written to a file.
-6. Instructions for viewing/exporting, including custom theme setup.
+5. The complete MARP Markdown content written to a `.md` file.
+6. Individual HTML slide files in a `slides/` directory.
+7. A PowerPoint file (`.pptx`) generated from the HTML slides.
+8. A `generate-pptx.js` script so the user can regenerate the PowerPoint if they edit the HTML.
+9. Instructions for viewing/exporting all formats.
 
 ## Quick Reference
 

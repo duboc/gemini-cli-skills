@@ -1,6 +1,6 @@
 # Zen Presenter
 
-A Gemini CLI skill for generating MARP presentation decks that follow the **Presentation Zen** philosophy — minimal text, high visual impact, and storytelling-driven design.
+A Gemini CLI skill for generating MARP presentation decks that follow the **Presentation Zen** philosophy — minimal text, high visual impact, and storytelling-driven design. Outputs MARP Markdown, HTML slides, and PowerPoint.
 
 ## What It Does
 
@@ -10,7 +10,9 @@ This skill transforms any topic into a visually striking slide deck by applying 
 2. **Design consultation** — Asks about theme, background images (optional), mood, and typography preferences before generating anything.
 3. **Story arc planning** — Structures the deck as a narrative: hook, tension, exploration, climax, resolution.
 4. **Zen slide generation** — Produces MARP Markdown with maximum 10 words per slide, zero bullet points, and either full-bleed Unsplash backgrounds or clean theme-based design.
-5. **Export guidance** — Provides instructions for viewing in VS Code, HTML, or PDF, including custom theme setup.
+5. **HTML slide conversion** — Converts each MARP slide into a standalone HTML file with proper dimensions and styling for PowerPoint conversion.
+6. **PowerPoint generation** — Uses `html2pptx` to convert HTML slides into a `.pptx` file with accurate positioning, shapes, and formatting.
+7. **Export guidance** — Provides instructions for all output formats: MARP Markdown, HTML, PowerPoint, and PDF.
 
 ## When Does It Activate?
 
@@ -129,6 +131,23 @@ marp slides.md --html --theme ./gcloud-theme.css
 marp slides.md --pdf --theme ./gcloud-theme.css
 ```
 
+## PowerPoint Output
+
+The skill automatically generates a `.pptx` file alongside the MARP Markdown. The pipeline:
+
+1. Each MARP slide is converted to a standalone HTML file (`slides/slide-NN.html`)
+2. The `html2pptx` library renders each HTML file and converts it to a PowerPoint slide
+3. A `generate-pptx.js` script is saved so you can regenerate the PowerPoint after editing
+
+**Requirements for PowerPoint generation** (must be globally installed):
+- `pptxgenjs`
+- `playwright`
+- `sharp`
+
+```bash
+npm install -g pptxgenjs playwright sharp
+```
+
 ## Included References
 
 | File | Description |
@@ -136,6 +155,7 @@ marp slides.md --pdf --theme ./gcloud-theme.css
 | **marp-syntax-guide.md** | Complete MARP Markdown syntax reference — frontmatter, background images, filters, themes, custom themes, export commands |
 | **zen-design-principles.md** | Presentation Zen philosophy — restraint, naturalness, emptiness, visual metaphor guide, story arc structure |
 | **visual-themes.md** | Eight pre-defined visual theme presets including Google Cloud default |
+| **html2pptx-guide.md** | HTML-to-PowerPoint conversion rules — layout dimensions, supported elements, critical text rules, shape styling, and PptxGenJS API reference |
 
 ## Included Assets
 
