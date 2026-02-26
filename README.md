@@ -20,6 +20,7 @@ A collection of reusable skills for [Gemini CLI](https://github.com/google-gemin
 | [using-git-worktrees](skills/using-git-worktrees/) | Create isolated git worktrees with smart directory selection, gitignore safety checks, dependency setup, and baseline test verification | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- using-git-worktrees` |
 | [webapp-testing](skills/webapp-testing/) | Toolkit for testing local web applications using Playwright with server lifecycle management, screenshots, and console log capture | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- webapp-testing` |
 | [writing-plans](skills/writing-plans/) | Generate detailed TDD implementation plans with atomic tasks, exact file paths, and complete code before writing any code | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- writing-plans` |
+| [spring-boot-upgrader](skills/spring-boot-upgrader/) | Migrate Spring Boot applications to 4.0 with auto-detected migration paths, phased upgrade plans, and Jackson 3 migration | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- spring-boot-upgrader` |
 
 ## Installation
 
