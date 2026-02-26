@@ -26,6 +26,19 @@ Examples:
 Available skills:
   software-troubleshooter   Structured code inspection and troubleshooting
   adk-developer             Build agents with Google's ADK (Python, Java, Go, TS)
+  agent-engine-deploy       Deploy ADK agents on Vertex AI Agent Engine
+  agent-engine-sessions-memory  Manage sessions and memory for Agent Engine agents
+  agent-engine-ops          Monitor, trace, secure, and evaluate Agent Engine agents
+  ai-studio-architect       Convert AI Studio prototypes to production on GCP
+  clarity-presenter         MARP decks with SCQA narrative + assertion-evidence design
+  developer-growth-analysis Analyze Gemini CLI session history for growth patterns
+  google-ads-funnel         Funnel-as-Code workflows for Google Ads
+  marp-to-slides            Convert MARP Markdown to Google Slides
+  spring-boot-upgrader      Migrate Spring Boot apps to 4.0 with phased upgrade plans
+  using-git-worktrees       Create isolated git worktrees with safety checks
+  webapp-testing            Test local web apps with Playwright
+  writing-plans             Generate TDD implementation plans
+  zen-presenter             MARP decks following Presentation Zen principles
 EOF
 }
 
@@ -131,6 +144,8 @@ cp -r "$SKILL_SOURCE"/* "$INSTALL_DIR"/
 # Make scripts executable
 if [[ -d "${INSTALL_DIR}/scripts" ]]; then
   chmod +x "${INSTALL_DIR}/scripts"/*.sh 2>/dev/null || true
+  chmod +x "${INSTALL_DIR}/scripts"/*.js 2>/dev/null || true
+  chmod +x "${INSTALL_DIR}/scripts"/*.py 2>/dev/null || true
 fi
 
 echo ""
