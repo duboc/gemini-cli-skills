@@ -8,14 +8,14 @@ This skill reads your AI Studio project, identifies all infrastructure requireme
 
 1. **Project scanning** — Reads README.md, package.json, source files, and environment variables to detect infrastructure needs.
 2. **Service mapping** — Maps detected patterns to GCP services: Vertex AI, Cloud Run, Firestore, Cloud Storage, Secret Manager, and more.
-3. **Architecture consultation** — Asks about deployment tier (Starter/Standard/Production/Enterprise), hosting strategy, AI backend pattern, and environment strategy.
+3. **Automatic tier detection** — Determines the deployment tier (Starter/Standard/Production/Enterprise) from the scan results. No questions asked — hosting is always Cloud Run (unified), AI calls always go through a server-side proxy.
 4. **Script generation** — Produces an idempotent `init-gcp.sh` with all `gcloud` commands, API enablement, IAM bindings, and resource creation.
 5. **SDK migration** — Guides the migration from `@google/generative-ai` (client-side) to `@google-cloud/vertexai` (server-side).
-6. **Additional artifacts** — Generates Dockerfile, cloudbuild.yaml, CORS configs, and Terraform files based on the selected tier.
+6. **Additional artifacts** — Generates Dockerfile, cloudbuild.yaml, CORS configs, and Terraform files based on the detected tier.
 
 ## When Does It Activate?
 
-The skill activates when you ask Gemini to deploy AI Studio projects or set up GCP infrastructure.
+The skill activates when you ask Gemini to deploy AI Studio projects or set up GCP infrastructure. It scans the project, auto-detects the right deployment tier, and generates everything — no setup questions required.
 
 | Trigger | Example |
 |---------|---------|
@@ -31,12 +31,12 @@ The skill activates when you ask Gemini to deploy AI Studio projects or set up G
 |------|---------|
 | **AI Studio Stack** | React/Angular + TypeScript + Vite + Tailwind + Gemini API |
 | **Service Detection** | Pattern matching for Firestore, Storage, Vertex AI, Cloud Run, Secret Manager, Auth, Pub/Sub, Cloud Build |
+| **Auto Tier Detection** | Automatically selects Starter, Standard, Production, or Enterprise based on scan results |
 | **SDK Migration** | `@google/generative-ai` to `@google-cloud/vertexai` code transformation |
 | **Infrastructure Scripts** | Idempotent `init-gcp.sh` with dry-run support |
 | **IAM & Security** | Least-privilege Service Accounts, Workload Identity, Secret Manager |
 | **CI/CD** | Cloud Build pipelines with GitHub triggers |
-| **Deployment Tiers** | Starter, Standard, Production, Enterprise |
-| **Frontend Hosting** | Cloud Run unified, Cloud Storage + CDN, Firebase Hosting |
+| **Frontend Hosting** | Cloud Run (unified) — single container for frontend and backend |
 
 ## Installation
 
