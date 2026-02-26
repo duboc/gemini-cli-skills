@@ -15,7 +15,7 @@ When a user asks to deploy an AI Studio project, set up GCP infrastructure, or c
 
 1. Locate and read the project's `README.md`, `package.json`, and source files.
 2. Run the **Project Analysis** to identify all infrastructure requirements.
-3. Run the **Architecture Consultation** to confirm choices with the user.
+3. **Automatically detect** the deployment tier from the scan results (no questions asked).
 4. Generate the `init-gcp.sh` infrastructure script.
 5. Optionally generate Terraform or Cloud Build configurations.
 
@@ -75,52 +75,53 @@ AI Studio Build mode generates a specific stack. Detect these patterns:
 | Framer Motion | Animation library | No infra change needed |
 | `grounding` config in service | Search grounding | Enable Vertex AI Search + grounding API |
 
-### Step 3: Architecture Consultation (Interactive)
+### Step 3: Automatic Tier Detection
 
-Before generating infrastructure, confirm the architecture with the user:
+Do NOT ask the user questions. Determine the deployment tier automatically from the scan results using the rules below. Always use **Cloud Run (unified)** for hosting, **server-side proxy** for AI calls, and derive the environment strategy from the tier.
 
-#### Deployment Tier
+#### Tier Detection Rules
 
-Ask: "What deployment tier fits your needs?"
+Evaluate these rules top-down. The first match wins:
 
-| Option | Description |
-|--------|-------------|
-| **Starter** | Single Cloud Run service, Firestore, minimal IAM — lowest cost |
-| **Standard** | Cloud Run + Cloud Storage + Secret Manager + custom domain |
-| **Production** | Full stack: Cloud Run, Firestore, Storage, CDN, monitoring, CI/CD pipeline |
-| **Enterprise** | VPC, Private Google Access, CMEK, audit logging, multi-region |
+| Rule | Condition | Tier |
+|------|-----------|------|
+| **Enterprise** | Project references VPC, Private Google Access, CMEK, `cloudkms`, audit logging, or multi-region | Enterprise |
+| **Production** | Project contains `cloudbuild.yaml`, CI/CD references (`pipeline`, `continuous`), or monitoring/logging configuration | Production |
+| **Standard** | Two or more services detected (e.g., Firestore + Storage, Vertex AI + Secret Manager) | Standard |
+| **Starter** | Anything else (single service or basic Vertex AI + Cloud Run) | Starter |
 
-#### Frontend Hosting
+#### Fixed Architectural Decisions
 
-Ask: "How should the frontend be hosted?"
+Every tier uses these defaults — no user input needed:
 
-| Option | Description |
-|--------|-------------|
-| **Cloud Run (unified)** | Frontend and backend served from a single Cloud Run container |
-| **Cloud Storage + CDN** | Static SPA on Cloud Storage with Cloud CDN for global delivery |
-| **Firebase Hosting** | Firebase Hosting with Cloud Run backend via rewrites |
+| Decision | Value | Rationale |
+|----------|-------|-----------|
+| **Frontend hosting** | Cloud Run (unified) | Single container, simplest deployment, no CORS issues |
+| **AI backend pattern** | Server-side proxy via Vertex AI SDK | Most secure, hides API keys, enables rate limiting |
+| **Environment strategy** | Derived from tier (see below) | Matches complexity to project needs |
 
-#### AI Backend Pattern
+#### Tier-to-Environment Mapping
 
-Ask: "How should the Gemini API calls be handled in production?"
+| Tier | Environments | Description |
+|------|-------------|-------------|
+| Starter | Single | One project, production only |
+| Standard | Single | One project, production only |
+| Production | Dual (staging + prod) | Staging for testing, prod for live |
+| Enterprise | Triple (dev + staging + prod) | Full pipeline |
 
-| Option | Description |
-|--------|-------------|
-| **Server-side proxy** | Cloud Run service proxies all Gemini calls via Vertex AI SDK (recommended) |
-| **Direct client calls** | Keep client-side SDK with API key restrictions (simpler but less secure) |
-| **API Gateway** | Cloud Endpoints or Apigee in front of Vertex AI (enterprise) |
+#### After Detection
 
-#### Environment Strategy
+Print a short summary of what was detected and the chosen tier before generating the script:
 
-Ask: "Do you need multiple environments?"
+```
+Detected: Vertex AI, Cloud Firestore, Secret Manager (3 services)
+Tier: Standard
+Hosting: Cloud Run (unified)
+AI pattern: Server-side proxy
+Environments: Single
+```
 
-| Option | Description |
-|--------|-------------|
-| **Single (dev/prod)** | One project, production only |
-| **Dual (staging + prod)** | Two projects: staging for testing, prod for live |
-| **Triple (dev + staging + prod)** | Full pipeline with dev, staging, and production projects |
-
-If the user says "you decide" or "default," use: **Standard** tier, **Cloud Run (unified)** hosting, **Server-side proxy** for AI, **Single** environment.
+Then proceed directly to Step 4 (script generation). Do not ask for confirmation.
 
 ### Step 4: Generate Infrastructure Script
 
@@ -273,7 +274,7 @@ Refer to `references/gcp-service-mapping.md` for detailed service configurations
 - **Least privilege always.** Never grant broader permissions than necessary. No `roles/editor` on service accounts.
 - **Idempotent scripts.** Every generated script must be safe to run multiple times without side effects.
 - **Secrets in Secret Manager.** Never put API keys in environment variables, scripts, or source code.
-- **Consult before generating.** Always ask about deployment tier, hosting, and AI pattern before generating.
+- **Auto-detect, don't ask.** Determine the deployment tier from the scan results. Do not ask the user to choose a tier, hosting strategy, or AI pattern.
 - **Server-side AI.** Always recommend moving Gemini API calls to a backend service for production.
 - **Comments explain why.** Generated scripts must explain the purpose of each command, not just what it does.
 - **Fail gracefully.** If a project does not look like an AI Studio export, say so and ask for clarification.

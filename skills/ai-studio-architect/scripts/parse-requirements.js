@@ -167,6 +167,55 @@ function detectServices(scannedFiles) {
   return detected;
 }
 
+// ---------------------------------------------------------------------------
+// Tier Detection
+// ---------------------------------------------------------------------------
+const ENTERPRISE_PATTERNS = ['vpc', 'private google access', 'cmek', 'cloudkms', 'audit log', 'multi-region', 'multi_region'];
+const PRODUCTION_PATTERNS = ['cloudbuild', 'cloud build', 'ci/cd', 'cicd', 'pipeline', 'continuous integration', 'continuous deployment'];
+
+function detectTier(scannedFiles, services) {
+  const combined = scannedFiles.map(f => f.content).join('\n');
+  const serviceCount = Object.keys(services).length;
+
+  // Enterprise: VPC, CMEK, audit logging, multi-region
+  if (ENTERPRISE_PATTERNS.some(p => combined.includes(p))) {
+    return 'enterprise';
+  }
+
+  // Production: CI/CD references or monitoring configuration
+  const hasCI = PRODUCTION_PATTERNS.some(p => combined.includes(p));
+  const hasMonitoring = !!services.logging || combined.includes('monitoring') || combined.includes('uptime');
+  if (hasCI || (hasMonitoring && serviceCount >= 2)) {
+    return 'production';
+  }
+
+  // Standard: 2+ services detected
+  if (serviceCount >= 2) {
+    return 'standard';
+  }
+
+  // Starter: everything else
+  return 'starter';
+}
+
+const TIER_CONFIG = {
+  starter:    { environments: 'single',  description: 'Single Cloud Run + minimal IAM' },
+  standard:   { environments: 'single',  description: 'Cloud Run + Storage + Secret Manager' },
+  production: { environments: 'dual',    description: 'Full stack with CI/CD and monitoring' },
+  enterprise: { environments: 'triple',  description: 'VPC, CMEK, audit logging, multi-region' },
+};
+
+function buildArchitectureDecisions(tier) {
+  const config = TIER_CONFIG[tier];
+  return {
+    tier,
+    hosting: 'cloud-run-unified',
+    aiPattern: 'server-side-proxy',
+    environments: config.environments,
+    description: config.description,
+  };
+}
+
 function detectAIStudioStack(scannedFiles) {
   const combined = scannedFiles.map(f => f.content).join('\n');
   const stack = {};
@@ -207,12 +256,20 @@ function detectEnvVars(scannedFiles) {
 // ---------------------------------------------------------------------------
 // Output formatters
 // ---------------------------------------------------------------------------
-function formatSummary(services, stack, envVars) {
+function formatSummary(services, stack, envVars, architecture) {
   const lines = [];
   lines.push('=== AI Studio Architect: Project Analysis ===\n');
 
+  // Architecture decisions
+  lines.push('## Architecture (auto-detected)');
+  lines.push(`  Tier:         ${architecture.tier}`);
+  lines.push(`  Hosting:      Cloud Run (unified)`);
+  lines.push(`  AI pattern:   Server-side proxy`);
+  lines.push(`  Environments: ${architecture.environments}`);
+  lines.push(`  Summary:      ${architecture.description}`);
+
   // AI Studio stack
-  lines.push('## Detected AI Studio Stack');
+  lines.push('\n## Detected AI Studio Stack');
   const stackItems = Object.entries(stack);
   if (stackItems.length > 0) {
     for (const [feature, info] of stackItems) {
@@ -260,8 +317,9 @@ function formatSummary(services, stack, envVars) {
   return lines.join('\n');
 }
 
-function formatJSON(services, stack, envVars) {
+function formatJSON(services, stack, envVars, architecture) {
   return JSON.stringify({
+    architecture,
     aiStudioStack: stack,
     gcpServices: services,
     environmentVariables: envVars,
@@ -325,16 +383,18 @@ function main() {
   const services = detectServices(scannedFiles);
   const stack = detectAIStudioStack(scannedFiles);
   const envVars = detectEnvVars(scannedFiles);
+  const tier = detectTier(scannedFiles, services);
+  const architecture = buildArchitectureDecisions(tier);
 
   switch (format) {
     case 'json':
-      console.log(formatJSON(services, stack, envVars));
+      console.log(formatJSON(services, stack, envVars, architecture));
       break;
     case 'shell':
       console.log(formatShell(services));
       break;
     default:
-      console.log(formatSummary(services, stack, envVars));
+      console.log(formatSummary(services, stack, envVars, architecture));
   }
 }
 
