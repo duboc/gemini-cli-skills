@@ -36,7 +36,8 @@ The skill activates when you ask Gemini to deploy AI Studio projects or set up G
 | **Infrastructure Scripts** | Idempotent `init-gcp.sh` with dry-run support |
 | **IAM & Security** | Least-privilege Service Accounts, Workload Identity, Secret Manager |
 | **CI/CD** | Cloud Build pipelines with GitHub triggers |
-| **Frontend Hosting** | Cloud Run (unified) — single container for frontend and backend |
+| **Deployment Tiers** | Starter, Standard, Production, Enterprise |
+| **Frontend Hosting** | Cloud Run (unified) or Cloud Storage + CDN |
 
 ## Installation
 
@@ -108,7 +109,7 @@ GCP services are needed.
 | File | Description |
 |------|-------------|
 | **gcp-service-mapping.md** | Detailed GCP service configurations with gcloud commands, IAM roles, and code examples for Vertex AI, Cloud Run, Firestore, Storage, Secret Manager, Cloud Build, and Monitoring |
-| **ai-studio-stack-guide.md** | Complete AI Studio Build mode stack documentation with migration patterns for geminiService.ts, environment variables, static assets, AI grounding, and Firebase-to-GCP mapping |
+| **ai-studio-stack-guide.md** | Complete AI Studio Build mode stack documentation with migration patterns for geminiService.ts, environment variables, static assets, AI grounding, and GCP-native production stack |
 
 ## Included Scripts
 

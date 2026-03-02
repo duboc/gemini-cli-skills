@@ -225,8 +225,7 @@ gcloud storage cp -r ./dist/* gs://$BUCKET_NAME/
 | Secret Name | Source | Description |
 |-------------|--------|-------------|
 | `gemini-api-key` | AI Studio | API key (if not using SA auth) |
-| `firebase-config` | Firebase Console | Firebase client config |
-| `database-url` | Firestore | Connection string |
+| `database-url` | Firestore | Connection string (if needed) |
 
 **gcloud Commands**:
 ```bash
@@ -332,23 +331,42 @@ gcloud builds submit --config=cloudbuild.yaml
 
 ---
 
-### Firebase Authentication
+### Identity-Aware Proxy (IAP)
 
-**API**: `identitytoolkit.googleapis.com`
+**API**: `iap.googleapis.com`
 
 **IAM Roles**:
 | Role | Scope | Description |
 |------|-------|-------------|
-| `roles/firebaseauth.admin` | Admin | Manage users and providers |
-| `roles/firebaseauth.viewer` | Read-only | View user data |
+| `roles/iap.httpsResourceAccessor` | Users/groups | Access IAP-protected resources |
+| `roles/iap.admin` | Admin | Configure IAP settings and policies |
+| `roles/iap.settingsAdmin` | Admin | Manage IAP settings |
 
 **gcloud Commands**:
 ```bash
 # Enable API
-gcloud services enable identitytoolkit.googleapis.com
+gcloud services enable iap.googleapis.com
 
-# List auth providers (via Firebase CLI)
-firebase auth:export users.json --project=$PROJECT_ID
+# Enable IAP on a Cloud Run service (requires a load balancer)
+gcloud iap web enable --resource-type=cloud-run \
+  --service=$SERVICE_NAME \
+  --region=$REGION
+
+# Grant access to a user
+gcloud iap web add-iam-policy-binding \
+  --member="user:user@example.com" \
+  --role="roles/iap.httpsResourceAccessor" \
+  --resource-type=cloud-run \
+  --service=$SERVICE_NAME \
+  --region=$REGION
+
+# Grant access to a group
+gcloud iap web add-iam-policy-binding \
+  --member="group:team@example.com" \
+  --role="roles/iap.httpsResourceAccessor" \
+  --resource-type=cloud-run \
+  --service=$SERVICE_NAME \
+  --region=$REGION
 ```
 
 ---

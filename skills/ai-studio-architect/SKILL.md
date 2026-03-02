@@ -33,7 +33,7 @@ Read the project files to identify infrastructure requirements. Scan these files
 | `vite.config.ts` | Build configuration, proxy settings, environment variables |
 | `src/App.tsx` | Component structure, data patterns, storage usage |
 | `.env` or `.env.example` | API keys, project IDs, service URLs |
-| `firebase.json` or `firestore.rules` | Firebase/Firestore usage |
+| `firestore.indexes.json` | Firestore index definitions |
 | `Dockerfile` or `cloudbuild.yaml` | Existing containerization |
 
 Run the helper script to automate initial detection:
@@ -55,7 +55,7 @@ Map detected patterns to GCP services. Use this mapping table:
 | `gemini`, `ai`, `model`, `generateContent`, `@google/generative-ai` | Vertex AI | `aiplatform.googleapis.com` |
 | `cloud run`, `backend`, `api`, `server`, `express`, `fastify` | Cloud Run | `run.googleapis.com` |
 | `secret`, `api_key`, `credential` | Secret Manager | `secretmanager.googleapis.com` |
-| `auth`, `login`, `user`, `session`, `firebase-auth` | Firebase Authentication | `identitytoolkit.googleapis.com` |
+| `auth`, `login`, `user`, `session`, `iap` | Identity-Aware Proxy (IAP) | `iap.googleapis.com` |
 | `schedule`, `cron`, `periodic` | Cloud Scheduler | `cloudscheduler.googleapis.com` |
 | `queue`, `task`, `async`, `pubsub`, `event` | Cloud Tasks / Pub/Sub | `cloudtasks.googleapis.com` or `pubsub.googleapis.com` |
 | `log`, `monitor`, `trace`, `metric` | Cloud Logging / Monitoring | `logging.googleapis.com`, `monitoring.googleapis.com` |
@@ -96,7 +96,7 @@ Every tier uses these defaults — no user input needed:
 
 | Decision | Value | Rationale |
 |----------|-------|-----------|
-| **Frontend hosting** | Cloud Run (unified) | Single container, simplest deployment, no CORS issues |
+| **Frontend hosting** | Cloud Run (unified) or Cloud Storage + CDN | Cloud Run is simplest (single container); Cloud Storage + CDN for static SPA global delivery |
 | **AI backend pattern** | Server-side proxy via Vertex AI SDK | Most secure, hides API keys, enables rate limiting |
 | **Environment strategy** | Derived from tier (see below) | Matches complexity to project needs |
 
@@ -207,7 +207,7 @@ After generating all artifacts, present the user with a migration checklist:
 | Handle AI calls | Move from client-side Gemini SDK to server-side Vertex AI behind Cloud Run |
 | Secure secrets | Use Secret Manager, never environment variables or hardcoded keys |
 | IAM | Dedicated Service Account with minimum roles per service |
-| Frontend hosting | Cloud Run (unified), Cloud Storage + CDN, or Firebase Hosting |
+| Frontend hosting | Cloud Run (unified) or Cloud Storage + CDN |
 | CI/CD | Cloud Build with `cloudbuild.yaml` triggered from GitHub |
 
 ## Decision Guide
@@ -226,7 +226,7 @@ Project has file uploads or image handling?
   No  -> Skip Storage setup
 
 Project has user authentication?
-  Yes -> Enable Identity Platform or Firebase Auth
+  Yes -> Enable Identity-Aware Proxy (IAP) on Cloud Run
   No  -> Skip auth setup, consider API key restrictions
 
 Deployment tier?

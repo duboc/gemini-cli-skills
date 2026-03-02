@@ -51,11 +51,11 @@ const SERVICE_PATTERNS = {
     role: 'roles/secretmanager.secretAccessor',
     label: 'Secret Manager',
   },
-  auth: {
-    patterns: ['firebase-auth', 'authentication', 'signInWith', 'createUser', 'onAuthStateChanged', 'identitytoolkit'],
-    api: 'identitytoolkit.googleapis.com',
-    role: 'roles/firebaseauth.admin',
-    label: 'Firebase Authentication',
+  iap: {
+    patterns: ['iap', 'authentication', 'identity-aware', 'login', 'auth', 'session'],
+    api: 'iap.googleapis.com',
+    role: 'roles/iap.httpsResourceAccessor',
+    label: 'Identity-Aware Proxy (IAP)',
   },
   scheduler: {
     patterns: ['schedule', 'cron', 'periodic', 'cloud scheduler'],
@@ -125,7 +125,7 @@ function scanProject(projectDir) {
 
   // Priority files
   const priorityFiles = ['README.md', 'readme.md', 'package.json', 'Dockerfile', 'docker-compose.yml',
-    'firebase.json', 'firestore.rules', '.env.example', 'cloudbuild.yaml', 'vite.config.ts', 'vite.config.js'];
+    'firestore.indexes.json', '.env.example', 'cloudbuild.yaml', 'vite.config.ts', 'vite.config.js'];
 
   for (const file of priorityFiles) {
     const content = scanFile(path.join(projectDir, file));

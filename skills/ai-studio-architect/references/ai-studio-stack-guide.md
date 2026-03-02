@@ -224,17 +224,17 @@ Enable the required API:
 gcloud services enable discoveryengine.googleapis.com
 ```
 
-### Pattern 5: Firebase to GCP Native
+### Pattern 5: GCP-Native Production Stack
 
-If the AI Studio project uses Firebase services, map them to GCP equivalents:
+Always use GCP-native services for production deployments:
 
-| Firebase Service | GCP Equivalent | Migration Notes |
-|-----------------|----------------|-----------------|
-| Firebase Hosting | Cloud Storage + CDN or Cloud Run | Rewrite rules move to Cloud Run routing |
-| Firebase Auth | Identity Platform | Same API, additional enterprise features |
-| Firestore (Firebase) | Firestore (GCP) | Same service, different console access |
-| Firebase Storage | Cloud Storage | Same underlying service |
-| Firebase Functions | Cloud Run or Cloud Functions (2nd gen) | Cloud Run preferred for flexibility |
+| Concern | GCP Service | Notes |
+|---------|-------------|-------|
+| Frontend + Backend hosting | Cloud Run | Unified container serving both frontend and API |
+| Database | Firestore (Native Mode) | Serverless document database with real-time capabilities |
+| Authentication | Identity-Aware Proxy (IAP) | Google-managed auth in front of Cloud Run, supports Google accounts and workforce identity |
+| File storage | Cloud Storage | Object storage for assets, uploads, and static files |
+| Serverless compute | Cloud Run | Preferred over Cloud Functions for flexibility and control |
 
 ## Production Checklist
 
