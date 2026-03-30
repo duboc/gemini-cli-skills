@@ -51,6 +51,13 @@ Analyze Git history and optionally issue tracker data:
 - Escalation frequency
 - Customer-reported vs internally-found defect ratio
 
+**DORA Metrics Correlation (if CI/CD data available):**
+- Deployment frequency per module (daily, weekly, monthly, quarterly)
+- Lead time for changes (commit to production)
+- Change failure rate (% of deployments causing incidents)
+- Mean time to recovery (MTTR)
+Modules with poor DORA metrics AND high business value are highest priority for modernization.
+
 **Churn Classification:**
 - HOT: >20 changes/month + >30% bug-fix ratio
 - WARM: 10-20 changes/month or >20% bug-fix ratio
@@ -70,6 +77,12 @@ Scoring (1-10 each dimension):
 
 Combined Score = (Value x 0.4) + (Complexity x 0.3) + (Fragility x 0.3)
 
+**Test Coverage Correlation:**
+If test coverage data is available (JaCoCo, Istanbul, coverage.py):
+- Modules with <30% coverage AND high churn = VERY HIGH fragility
+- Modules with >80% coverage AND high churn = likely well-maintained
+- Adjust Fragility score: multiply by (1 + (1 - test_coverage_ratio) * 0.5) to penalize low coverage
+
 ### Step 4: Risk Quadrant Classification
 Place each module in a 2x2 matrix:
 
@@ -87,6 +100,28 @@ Place each module in a 2x2 matrix:
                     LOW BUSINESS VALUE
          HIGH FRAGILITY <---> LOW FRAGILITY
 ```
+
+**Gartner TIME Model Classification:**
+Classify each module using the Gartner TIME model alongside the risk quadrant:
+
+| TIME Category | Criteria | GCP Action |
+|---------------|----------|------------|
+| **Tolerate** | Low value, low fragility, acceptable cost | Leave as-is or rehost to Compute Engine |
+| **Invest** | High value, low fragility | Enhance on current platform or replatform to Cloud SQL/GKE |
+| **Migrate** | High value, high fragility OR approaching EOL | Refactor to Cloud Run microservices, Pub/Sub events |
+| **Eliminate** | Low value, high maintenance cost | Decommission after dead-code-detector confirmation |
+
+**6R Classification per Module:**
+For modules classified as "Migrate", further classify using the 6R framework:
+
+| 6R Strategy | GCP Approach | Effort |
+|-------------|-------------|--------|
+| **Rehost** | Migrate to VMs on Compute Engine | Low |
+| **Replatform** | Move DB to Cloud SQL/AlloyDB, containerize to GKE | Low-Medium |
+| **Refactor** | Decompose to Cloud Run microservices + Pub/Sub | High |
+| **Repurchase** | Replace with Google SaaS (Apigee, Chronicle, etc.) | Medium |
+| **Retire** | Decommission | Minimal |
+| **Retain** | Manage via Anthos for hybrid | None (for now) |
 
 ### Step 5: Output
 Generate comprehensive risk assessment:
@@ -135,3 +170,5 @@ Write the HTML file to `~/.agent/diagrams/business-risk-assessment.html` and ope
 - If no issue tracker data, rely on git commit messages for bug-fix detection
 - Flag modules with single-author knowledge silos (bus factor = 1)
 - Cross-reference with Phase 1 inventory skill outputs if available
+- Apply Gartner TIME model and 6R framework to provide industry-standard classification mapped to GCP services
+- Correlate DORA metrics when CI/CD data is available for a more complete picture of module health

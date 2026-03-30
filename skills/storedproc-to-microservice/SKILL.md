@@ -21,6 +21,13 @@ Select procedures for extraction based on priority:
 3. **ORCHESTRATION** procedures — workflow logic better suited to application tier
 4. **CRUD_ONLY** procedures — lowest priority, can be replaced by ORM
 
+**DDD Bounded Context Methodology:**
+Use Domain-Driven Design to determine service boundaries on GCP:
+- Group procedures by the domain aggregate they operate on (e.g., all order-related → Order Service on Cloud Run)
+- Identify procedures spanning multiple aggregates — may need saga coordination via Cloud Workflows
+- Apply "one database per bounded context" principle (separate Cloud SQL instances or AlloyDB clusters)
+- Anti-Corruption Layer pattern: when the new Cloud Run service must interact with the legacy database, introduce a translation layer to protect the new domain model
+
 For each selected procedure, analyze:
 - Input parameters and types
 - Output parameters and return types
@@ -112,6 +119,18 @@ For each extracted procedure, generate an API endpoint:
 | Complex operation | POST | `/api/v1/{entities}/{action}` |
 | Report/aggregate | GET | `/api/v1/{entities}/reports/{report-name}` |
 
+**Contract Testing:**
+Generate contract test stubs to verify API compatibility:
+- Pact: consumer-driven contract tests (generate pact files from OpenAPI spec)
+- Spring Cloud Contract: producer-side contract verification
+- Run contract tests in Cloud Build CI/CD to prevent breaking API changes
+- Essential when multiple consumers depend on the extracted microservice
+
+**API Versioning Strategy:**
+- URL-based versioning: `/api/v1/orders`, `/api/v2/orders` (recommended)
+- Use Cloud Endpoints or Apigee for API lifecycle management
+- Maintain backward compatibility for at least one major version
+
 ### Step 4: Data Migration Plan
 Design the data access transition:
 
@@ -126,6 +145,12 @@ Design the data access transition:
 - Generate Flyway/Liquibase migration scripts
 - Design data synchronization during transition period
 - Define data ownership boundaries
+
+**Database Migration Tools:**
+- Flyway: SQL migration scripts (recommended for Java/Spring Boot → Cloud SQL)
+- Liquibase: XML/YAML changeset format with rollback support
+- Alembic: Python-based migrations for FastAPI services using SQLAlchemy → Cloud SQL
+- Database Migration Service (DMS): for bulk data migration from on-premises to Cloud SQL/AlloyDB
 
 **Migration Scripts:**
 - Schema creation for new service database
@@ -166,6 +191,13 @@ Produce:
    - Data sync strategy during transition
    - Rollback procedures
 
+**Performance Comparison Baseline:**
+Document performance expectations for DB-tier vs app-tier (Cloud Run) execution:
+- Stored procedure execution time (from telemetry if available)
+- Expected Cloud Run service latency (network hop to Cloud SQL + app processing + query)
+- Flag procedures where DB-tier execution is significantly faster (bulk operations with large data sets)
+- For bulk operations, consider keeping a thin Cloud SQL function and calling it from Cloud Run
+
 5. **Integration Test Stubs:**
    - Test cases that verify the microservice produces the same results as the stored procedure
    - Input/output test fixtures derived from procedure signatures
@@ -199,3 +231,7 @@ Write the HTML file to `~/.agent/diagrams/storedproc-to-microservice.html` and o
 - Default to Python/FastAPI unless user specifies Java/Spring Boot
 - Generate comprehensive OpenAPI specs with examples and error responses
 - Cross-reference with `stored-proc-analyzer` output if available
+- Apply DDD bounded context methodology to determine Cloud Run service boundaries — group by domain aggregate
+- Generate Pact or Spring Cloud Contract test stubs for all extracted APIs
+- Include Alembic as migration tool option for Python/FastAPI services targeting Cloud SQL
+- Use Anti-Corruption Layer pattern when Cloud Run services interact with legacy databases

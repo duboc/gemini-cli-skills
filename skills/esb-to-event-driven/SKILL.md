@@ -37,6 +37,15 @@ For each route group, design the event architecture:
 - Use imperative naming for commands (something to do)
 - Define event boundaries aligned with bounded contexts
 
+**Event Storming Methodology:**
+Before designing event schemas, conduct domain event discovery using Event Storming:
+1. Identify domain events (orange): things that happen in the business domain
+2. Identify commands (blue): actions that trigger events
+3. Identify aggregates (yellow): entities that handle commands and emit events
+4. Identify policies (purple): reactions to events ("when X happens, then do Y")
+5. Identify external systems (pink): systems that produce or consume events
+6. Map to bounded contexts to define event ownership boundaries and Pub/Sub topic structure
+
 **Event Schema (CloudEvents format):**
 ```json
 {
@@ -56,6 +65,26 @@ For each route group, design the event architecture:
 - Version schemas from the start (include `schemaVersion` in data)
 - Design for schema evolution (additive changes only, no field removal)
 
+**Schema Registry & Serialization:**
+
+| Format | Pros | Cons | Best For |
+|--------|------|------|----------|
+| JSON | Human-readable, flexible | Larger payload, no enforcement | Prototyping, low-volume |
+| Avro | Compact, schema evolution, Pub/Sub native | Requires schema, binary | High-volume Pub/Sub topics |
+| Protobuf | Very compact, strong typing, gRPC native | Requires proto compilation | gRPC + Pub/Sub hybrid, Dataflow |
+
+**Pub/Sub Schema Support:**
+- Pub/Sub natively supports Avro and Protobuf schemas for topic-level validation
+- Create schemas via `gcloud pubsub schemas create` with Avro or Protobuf definition
+- Associate schema with topic for automatic message validation
+- Schema revisions enable controlled evolution
+
+**AsyncAPI Specification:**
+Generate AsyncAPI 3.0 specifications for all event contracts:
+- Document Pub/Sub topics as channels, messages as CloudEvents, and schemas
+- Include examples for each message type
+- AsyncAPI specs serve as the contract between event producers and consumers
+
 ### Step 3: Architecture Blueprint
 Produce the target architecture:
 
@@ -66,21 +95,28 @@ Produce the target architecture:
 - Dead Letter Queue (DLQ) strategy per topic
 - Retention policy per topic
 
-**Infrastructure Components:**
+**Infrastructure Components (GCP):**
 
-| Component | Google Cloud | AWS | Azure |
-|-----------|-------------|-----|-------|
-| Event Broker | Pub/Sub | SNS/SQS, EventBridge | Event Grid, Service Bus |
-| Stream Processing | Dataflow | Kinesis | Stream Analytics |
-| Event Store | BigQuery | DynamoDB Streams | Cosmos DB Change Feed |
-| Orchestration | Cloud Workflows | Step Functions | Logic Apps |
-| CDC | Datastream | DMS | — |
+| Component | GCP Service | Notes |
+|-----------|------------|-------|
+| Event Broker | Pub/Sub | Serverless, global, at-least-once delivery |
+| Stream Processing | Dataflow (Apache Beam) | Auto-scaling, exactly-once processing |
+| Event Store | BigQuery | Append-only event log, analytics-ready |
+| Orchestration | Cloud Workflows | Serverless workflow orchestration |
+| CDC | Datastream | Real-time CDC from Cloud SQL, AlloyDB, on-prem |
+| Event Routing | Eventarc | Route events from 130+ GCP sources to targets |
+| API Gateway | Apigee / Cloud Endpoints | For request-reply patterns replacing sync ESB |
 
 **Patterns to Apply:**
 - Idempotent consumers (handle duplicate delivery)
 - Outbox pattern (for reliable event publishing with DB transactions)
 - Saga pattern (for distributed transactions replacing ESB orchestration)
 - Event sourcing (where appropriate for audit/compliance requirements)
+- Backpressure handling: Pub/Sub flow control settings, Cloud Run autoscaling based on subscription backlog, Dataflow autoscaling for stream processing
+- PII/sensitive data handling in events:
+  - Option A: Claim-check pattern (event contains reference ID, consumer fetches from Secret Manager or Firestore)
+  - Option B: Field-level encryption via Tink library before publishing to Pub/Sub
+  - Option C: DLP API integration for automatic PII detection and de-identification in event payloads
 
 ### Step 4: Migration Sequence
 Design a phased migration using the strangler fig pattern:
@@ -142,3 +178,7 @@ Write the HTML file to `~/.agent/diagrams/esb-to-event-driven.html` and open it 
 - Consider event size limits (Pub/Sub: 10MB, Kafka: configurable, typically 1MB)
 - Generate Mermaid diagrams for all architecture outputs
 - Cross-reference with `esb-cataloger` and `esb-routing-extractor` outputs if available
+- Use Event Storming methodology to discover domain events before designing Pub/Sub topic structure
+- Generate AsyncAPI specifications for all Pub/Sub event contracts
+- Use Pub/Sub native schema support (Avro/Protobuf) for message validation
+- Address PII in events using claim-check pattern or Tink field-level encryption

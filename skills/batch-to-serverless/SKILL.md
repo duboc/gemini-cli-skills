@@ -37,6 +37,23 @@ Match each job to the optimal target platform:
 | Complex DAG, many dependencies | Cloud Composer (Airflow) | Full DAG orchestration |
 | Real-time stream processing | Dataflow / Flink | Continuous processing, not batch |
 
+**GCP Target Selection Matrix:**
+
+| Criteria | GCP Target | Max Duration | Max Memory | Notes |
+|----------|-----------|-------------|------------|-------|
+| Stateless, event-triggered, <60min | Cloud Functions (2nd gen) | 3600s | 32 GiB | Cloud Run under the hood |
+| Stateless, scheduled, 15min-1hr | Cloud Run Jobs | 3600s | 32 GiB | Scale-to-zero, Knative-based |
+| Stateful/checkpointed, any duration | Cloud Run Jobs + GCS checkpoints | 3600s | 32 GiB | Checkpoint to Cloud Storage |
+| Long-running (>1hr), high resources | GKE CronJob | No limit | Node-dependent | Full K8s resource control |
+| Multi-step with dependencies | Cloud Workflows + Cloud Run Jobs | Per-step limits | Per-step | Orchestrated pipeline |
+| Complex DAG, many dependencies | Cloud Composer (Airflow) | Per-task | Per-task | Full DAG orchestration |
+| Data processing pipeline | Dataflow (Apache Beam) | No limit | Worker-dependent | Auto-scaling, exactly-once |
+
+**Knative Foundation:**
+Cloud Run and Cloud Run Jobs are built on Knative. For maximum portability within GCP:
+- Use Knative Job specs directly for GKE deployments
+- Same container images work on Cloud Run and GKE with Knative
+
 ### Step 3: Configuration Generation
 For each job, generate draft configurations:
 
@@ -102,6 +119,19 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 **Terraform/Pulumi snippet** for infrastructure provisioning.
 
 **Cloud Scheduler** configuration for time-based triggers.
+
+**Large File Handling on GCP:**
+
+| File Size | Strategy | GCP Services |
+|-----------|----------|-------------|
+| < 10 MB | Pub/Sub message payload | Direct inclusion in Pub/Sub message |
+| 10 MB - 5 GB | Cloud Storage + event notification | Upload to GCS, trigger via Eventarc |
+| > 5 GB | Chunked processing | GCS multipart upload, parallel Cloud Run Jobs |
+
+**Deployment Patterns for Migrated Jobs:**
+- Blue-green: Cloud Run revisions with traffic splitting (0%/100% → 100%/0%)
+- Canary: Route percentage of Cloud Scheduler triggers to new revision
+- Shadow: Run new Cloud Run Job alongside old, compare outputs via BigQuery
 
 ### Step 4: Orchestration Design
 For batch chains (multiple dependent jobs), design replacement orchestration:
@@ -181,3 +211,6 @@ Write the HTML file to `~/.agent/diagrams/batch-to-serverless.html` and open it 
 - Flag jobs that require VPC access or private networking
 - Generate Mermaid diagrams for orchestration flows
 - Cross-reference with `batch-app-scanner` output if available
+- Cloud Run Jobs is the default GCP target for most batch migrations — it provides scale-to-zero and Knative portability
+- For large file handling, use Cloud Storage + Eventarc notification pattern for files > 10 MB
+- Use Cloud Run traffic splitting for blue-green deployment of migrated jobs

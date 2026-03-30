@@ -31,6 +31,8 @@ Locate and parse database schema sources. Scan these file types in order:
 | `*.ddl` / `*.pks` / `*.pkb` | Oracle package specs and bodies |
 | `schema-export/` / `dump/` | Full database exports (pg_dump, mysqldump, expdp) |
 | `src/main/resources/db/` | Embedded SQL scripts in application projects |
+| Google DMS reports | Database Migration Service assessment reports |
+| ora2pg reports | ora2pg migration assessment output (cost estimation) |
 
 **Auto-detect SQL dialect** from syntax markers — do not ask the user which database they use:
 
@@ -70,6 +72,12 @@ Classify each procedure into exactly one category based on code analysis. Apply 
 | Parameter count | 15% | 0-3 parameters | 4-8 parameters | 9+ parameters or uses OUT/INOUT |
 
 Final score = weighted sum of dimension scores. Round to nearest integer.
+
+**Transaction Isolation & Locking Analysis:**
+- Detect explicit isolation level settings (SET TRANSACTION ISOLATION LEVEL, pragma)
+- Flag procedures using table locks (LOCK TABLE, WITH (TABLOCKX), SERIALIZABLE hints)
+- Note procedures with explicit lock timeouts or deadlock retry logic
+- Document locking behavior implications for Cloud SQL/AlloyDB migration
 
 ### Step 3: Telemetry Cross-Reference
 
@@ -112,6 +120,9 @@ Analyze procedure interdependencies:
   - SQL Server: deprecated syntax (SET ROWCOUNT, implicit OUTER JOINs with *= or =*), xp_cmdshell
   - PostgreSQL: deprecated contrib modules, old-style casts (::)
 - **External dependencies**: Linked servers (@server.db.schema.table), DB links (table@dblink), external tables, CLR procedures, Java stored procedures
+- **File I/O procedures**: UTL_FILE (Oracle), xp_cmdshell/OPENROWSET (SQL Server), COPY/pg_read_file (PostgreSQL) — flag as requiring Cloud Storage migration
+- **Java stored procedures**: Oracle Java SP, SQL Server CLR procedures — flag as requiring extraction to Cloud Run or GKE
+- **CLR procedures**: .NET assemblies registered in SQL Server — extract assembly references and .NET version
 
 Build an adjacency list of procedure-to-procedure calls for the dependency graph.
 
@@ -198,3 +209,5 @@ Write the HTML file to `~/.agent/diagrams/stored-proc-inventory.html` and open i
 - **Cross-reference with other skills**: if `storedproc-to-microservice` skill output is available, link procedure inventory entries to proposed microservice boundaries.
 - **Preserve original names** — use fully qualified names (schema.procedure_name) in all output. Do not rename or abbreviate.
 - **Be precise about scoring** — show the breakdown of each complexity dimension, not just the final score, for procedures in the top 10.
+- Reference Google DMS and ora2pg for automated assessment validation
+- Flag UTL_FILE, Java stored procedures, and CLR procedures as requiring Cloud Storage or Cloud Run migration

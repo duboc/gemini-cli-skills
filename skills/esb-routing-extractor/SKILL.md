@@ -33,6 +33,16 @@ Classify each route into one of five categories:
 | ORCHESTRATE | Multi-step flow with conditional logic, parallel processing, aggregation. Coordinates multiple services. | High — requires workflow engine or choreography design |
 | BUSINESS_RULE | Contains domain-specific validation, calculation, routing decisions based on business data, regulatory logic. | Very High — requires extraction to dedicated microservice |
 
+**Suggested GCP Target per Category:**
+
+| Category | Suggested GCP Target |
+|----------|---------------------|
+| PASS-THROUGH | Apigee API Gateway or Cloud Endpoints |
+| TRANSFORM | Cloud Run service with lightweight transform logic |
+| ENRICH | Cloud Run service with Firestore/Cloud SQL lookup |
+| ORCHESTRATE | Cloud Workflows or Cloud Composer |
+| BUSINESS_RULE | Cloud Run microservice or dedicated rules engine (Drools on GKE) |
+
 ### Step 3: Business Rule Extraction
 For routes classified as BUSINESS_RULE or ORCHESTRATE, extract the embedded logic:
 
@@ -51,6 +61,12 @@ For routes classified as BUSINESS_RULE or ORCHESTRATE, extract the embedded logi
 - Document the business meaning of each routing decision
 - Map which destinations are selected under which conditions
 
+**Complex Event Processing (CEP) Consideration:**
+If routes correlate multiple events over time windows (e.g., "if 3 failed payments within 1 hour, trigger fraud alert"), flag as CEP candidates:
+- Suggested GCP target: Dataflow (Apache Beam) with windowed aggregations
+- Alternative: Cloud Run + Pub/Sub with stateful processing
+- Document the time window, event correlation criteria, and action triggers
+
 **Decision Tables:**
 - Identify lookup tables or mapping tables embedded in configs
 - Extract as structured data (markdown table)
@@ -67,6 +83,20 @@ Score each route on migration complexity (1-10):
 | Error Handling Complexity | 15% | None=0, retry=3, compensation/saga=8, manual intervention=10 |
 | Data Transformation Depth | 10% | None=0, format only=3, structural=6, semantic=10 |
 | Testing Coverage | 10% | Has tests=0, partial=5, no tests=10 |
+
+**Route Execution Frequency Weighting:**
+If ESB metrics or access logs are available, weight migration priority by execution frequency:
+- HOT routes (>1000 executions/day): migrate first for maximum impact
+- WARM routes (100-1000/day): schedule in main migration wave
+- COLD routes (<100/day): migrate last or consider retirement
+- ZERO routes (no executions in 90+ days): candidate for decommission via dead-code-detector
+
+**Performance Metrics Extraction:**
+From ESB monitoring data, extract per-route:
+- Average throughput (messages/sec)
+- P50/P95/P99 latency
+- Error rate percentage
+- Peak load patterns (time of day, day of week)
 
 ### Step 5: Output
 Produce:
@@ -113,3 +143,5 @@ Write the HTML file to `~/.agent/diagrams/esb-routing-analysis.html` and open it
 - Distinguish between technical routing (load balancing, failover) and business routing (content-based)
 - If a route mixes categories, classify by its most complex component
 - Cross-reference with `esb-cataloger` output if available
+- Map each route category to its optimal GCP target (Apigee, Cloud Run, Cloud Workflows, etc.)
+- Consider Dataflow for routes with Complex Event Processing patterns

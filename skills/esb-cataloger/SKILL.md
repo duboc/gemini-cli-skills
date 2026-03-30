@@ -36,6 +36,9 @@ For each discovered integration flow, extract:
 - **Transformation**: none, format conversion, data mapping, enrichment
 - **Authentication**: none, basic auth, OAuth, certificate, API key
 - **Error handling**: DLQ, retry policy, alerting
+- **Message delivery semantics**: exactly-once, at-least-once, at-most-once (infer from config: persistent messages, acknowledgment mode, transaction usage)
+- **Integration frequency/SLA**: if available from monitoring, note calls/day or messages/day and SLA requirements
+- **AsyncAPI spec**: note whether an AsyncAPI specification exists or should be generated for Pub/Sub migration
 
 ### Step 3: Consumer/Producer Matrix
 Build a comprehensive matrix:
@@ -51,6 +54,9 @@ Generate aggregate analysis:
 - Integrations using deprecated protocols or patterns
 - Integrations with no error handling configured
 - Credential/auth inventory (flag hardcoded credentials)
+- **Critical path identification**: integrations on the critical path for business transactions (high frequency + low latency SLA)
+- **"Zombie" integration detection**: integrations defined in config but showing zero traffic — candidates for decommissioning before migration
+- **Message delivery semantics distribution**: breakdown of exactly-once vs at-least-once vs at-most-once (maps to Pub/Sub delivery guarantees)
 
 ### Step 5: Output Catalog
 Produce:
@@ -59,6 +65,7 @@ Produce:
 3. **Protocol Distribution** — breakdown by protocol type
 4. **Risk Assessment** — flag integrations with hardcoded URLs, missing error handling, deprecated protocols
 5. **Modernization Readiness** — classify each integration as: SIMPLE_REPLACEMENT (dumb pipe), NEEDS_REDESIGN (has transformations), COMPLEX (embedded business logic)
+6. **AsyncAPI Documentation** — For message-based integrations (JMS, Kafka, MQ), generate AsyncAPI 3.0 specification stubs documenting channels, messages, and schemas for Pub/Sub migration planning
 
 ## HTML Report Output
 
@@ -81,3 +88,5 @@ Write the HTML file to `~/.agent/diagrams/esb-catalog.html` and open it in the b
 - Note any integrations that reference environments (dev/staging/prod) in URLs
 - If config files reference WSDL/XSD schemas, note their locations
 - Cross-reference with `esb-routing-extractor` skill output if available
+- Generate AsyncAPI specification stubs for async integrations to facilitate Pub/Sub migration
+- Flag zombie integrations (defined but unused) for decommissioning before GCP migration

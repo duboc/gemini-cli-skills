@@ -41,6 +41,40 @@ Before running any phase, gather context about the application landscape:
 5. **Constraints**: Timeline, budget, team expertise, compliance requirements, business-critical windows to avoid
 6. **Success Criteria**: What does "modernized" mean for this organization? (cloud-native, containerized, decomposed, replatformed)
 
+**6R Framework Pre-Assessment:**
+Before running any phase, classify the overall application using the 6R framework:
+- Not everything should be refactored — some components should be rehosted, replatformed, repurchased, retained, or retired
+- Components classified as "Retire" skip Phase 4 entirely
+- Components classified as "Rehost" need only Phase 1 (SBOM) and minimal Phase 2
+- Components classified as "Repurchase" need requirements extraction, not architecture design
+
+| 6R Strategy | GCP Target | Phases Needed |
+|-------------|-----------|---------------|
+| Rehost | Compute Engine (Migrate to VMs) | Phase 1 only |
+| Replatform | Cloud SQL + GKE | Phase 1 + 2 |
+| Refactor | Cloud Run + Pub/Sub + microservices | All 4 phases |
+| Repurchase | Google SaaS (Apigee, etc.) | Phase 1 + 3 (requirements) |
+| Retire | Decommission | Phase 1 + 3 (dead code) |
+| Retain | Anthos for hybrid management | Phase 1 + 2 |
+
+**Team Capability Assessment:**
+Assess the team's readiness for GCP modernization:
+- GCP experience: Cloud Run, GKE, Pub/Sub, Cloud SQL, IAM, VPC
+- Cloud-native patterns: containers, CI/CD with Cloud Build, IaC with Terraform
+- Microservices experience: API design, distributed systems, event-driven
+- Language/framework skills: does the team know the target stack?
+- DevOps maturity: automated testing, Cloud Deploy, Cloud Monitoring
+- Identify skills gaps and recommend Google Cloud Skills Boost training before Phase 4
+
+**Cost/Benefit Analysis Framework:**
+For each component in scope, estimate:
+- Current annual operational cost (infrastructure + licensing + maintenance labor)
+- Migration effort (person-months)
+- Target annual GCP cost (Cloud Run + Cloud SQL + Pub/Sub + monitoring)
+- Use Google Cloud Pricing Calculator for target cost estimation
+- Payback period = migration effort cost / annual savings
+- Only proceed where payback period < 24 months (or override with strategic justification)
+
 **Output**: A scoping document saved to `modernization-scope.md` in the working directory. This document drives which skills to invoke and in what order.
 
 **Skill Selection**: Based on the scope, determine which of the 11 skills apply:
@@ -170,10 +204,48 @@ Synthesize all phase outputs into a single, executive-ready migration plan:
 - Simple batch job containerization (early cloud adoption)
 - PASS-THROUGH ESB routes to API gateway (quick ESB decommissioning)
 
+**5.5 Architecture Decision Records (ADRs)**
+Generate ADRs for key decisions made during the assessment:
+- ADR-001: Choice of event broker (Pub/Sub vs Kafka on GKE)
+- ADR-002: Database per service (Cloud SQL) vs shared database strategy
+- ADR-003: Synchronous (Cloud Run) vs asynchronous (Pub/Sub) communication
+- ADR-004: Container platform (Cloud Run vs GKE Autopilot vs GKE Standard)
+- ADR-005: API gateway selection (Apigee vs Cloud Endpoints)
+
+Format each ADR as:
+- Title, Date, Status (Proposed/Accepted/Deprecated)
+- Context: what technical or business forces are at play
+- Decision: what we decided
+- Consequences: trade-offs and implications
+
+**5.6 Observability Setup Guidance**
+Recommend observability stack for the modernized GCP architecture:
+- OpenTelemetry instrumentation for traces, metrics, and logs
+- Cloud Trace for distributed tracing across Cloud Run services
+- Cloud Monitoring for metrics, dashboards, and uptime checks
+- Cloud Logging for centralized structured logging (JSON format)
+- SLO/SLI definitions for critical services:
+  - Availability SLO: 99.9% for core domain services (Cloud Monitoring SLO monitoring)
+  - Latency SLI: P99 response time < Xms (Cloud Trace)
+  - Error budget tracking and alerting (Cloud Monitoring alert policies)
+- Error Reporting for automatic exception grouping and notification
+
 **6. Risk Register**
 - Technical risks (distributed transactions, data consistency, performance)
 - Organizational risks (team skills, change management, knowledge silos)
 - Business risks (downtime windows, regulatory compliance, customer impact)
+
+**Change Management & Stakeholder Communication:**
+- Identify stakeholders by phase and their concerns
+- Communication cadence: weekly for technical team, bi-weekly for management, monthly for executive sponsors
+- Training plan: Google Cloud Skills Boost learning paths for teams adopting GCP
+- Runbook for operational handoff from legacy to GCP-hosted services
+
+**Google Migration Center Integration:**
+- Upload SBOM and dependency data to Migration Center for cloud readiness scoring
+- Use Migration Center fit assessment to validate 6R classifications
+- Track migration progress through Migration Center dashboard
+- Generate executive reports from Migration Center for stakeholder updates
 
 Save the unified plan to `modernization-plan.md`.
 
@@ -250,3 +322,8 @@ When resuming an interrupted session:
 - **Quick wins surface early.** Identify and highlight quick wins throughout — they build momentum and demonstrate value.
 - **Executive-ready output.** The unified plan and dashboard should be understandable by non-technical stakeholders.
 - **Resumable.** The state file makes the process resumable across sessions. Never lose progress.
+- **Apply 6R framework during scoping** — not everything should be refactored to Cloud Run.
+- **Assess team GCP capabilities** and recommend Google Cloud Skills Boost training for gaps.
+- **Generate Architecture Decision Records (ADRs)** for key technical decisions.
+- **Include OpenTelemetry + Cloud Trace + Cloud Monitoring observability setup** in every target architecture.
+- **Use Google Migration Center** for portfolio-level tracking and executive reporting.

@@ -36,6 +36,20 @@ Scan source code for synchronous and asynchronous communication patterns:
 | Event Emitters | `ApplicationEventPublisher`, custom event bus patterns, `@EventListener` |
 | File-based | Shared filesystem paths, FTP/SFTP configs, S3 bucket references |
 
+**Resilience Patterns Already in Place:**
+Detect existing resilience patterns that must be preserved or enhanced during GCP migration:
+- Circuit breaker: Hystrix, Resilience4j, `@CircuitBreaker` annotations
+- Bulkhead: Thread pool isolation, Resilience4j bulkhead
+- Retry with backoff: Spring Retry, Resilience4j retry policies
+- Timeout configuration: HttpClient timeouts, gRPC deadlines, JMS receive timeouts
+- Service mesh: Istio on GKE provides circuit breaking, retries, and timeouts at infrastructure level
+
+**Runtime Discovery via Service Mesh:**
+If Istio is deployed on GKE, extract runtime topology from:
+- `VirtualService` and `DestinationRule` resources for traffic routing rules
+- Kiali service graph for actual service-to-service communication patterns
+- Envoy access logs for request volume and latency per service pair
+
 ### Step 2: Dependency Graph Construction
 Build a directed graph of all discovered dependencies:
 - **Nodes**: Applications, services, databases, queues, topics, external systems
@@ -47,6 +61,8 @@ Flag coupling risks:
 - Circular dependencies between services
 - Single points of failure (one service called by >5 others)
 - Fan-out patterns (one call triggers >5 downstream calls)
+- Network latency impact: synchronous chains crossing GCP regions or zones (add estimated latency per hop)
+- Conway's Law implications: flag dependencies that cross team boundaries (if team ownership data available, map dependencies to team-to-team coupling)
 
 ### Step 3: Shared Database Detection
 Scan across application boundaries for the "integration database" anti-pattern:
@@ -91,6 +107,7 @@ Generate comprehensive dependency analysis:
 4. **Batch Chain Diagram** — Critical path with parallelization opportunities
 5. **Modernization Blockers** — Dependencies that must be resolved before services can be extracted
 6. **Recommended Decoupling Sequence** — Order in which to break dependencies
+7. **Architecture Rule Validation** — If ArchUnit test files exist (`*ArchTest.java`, `*ArchitectureTest.java`), document which architecture rules are enforced and which are violated. Recommend new ArchUnit rules for identified anti-patterns.
 
 ## HTML Report Output
 
@@ -113,3 +130,6 @@ Write the HTML file to `~/.agent/diagrams/dependency-map.html` and open it in th
 - Each application boundary should be clearly defined
 - Generate Mermaid diagrams for all graph outputs
 - Cross-reference with `stored-proc-analyzer`, `esb-cataloger`, and `batch-app-scanner` outputs if available
+- Check for ArchUnit or similar architecture test frameworks — their rules document intended architecture boundaries
+- Flag synchronous dependency chains that cross team boundaries (Conway's Law violations)
+- When Istio service mesh is present on GKE, prefer runtime topology data over static analysis

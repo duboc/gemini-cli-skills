@@ -38,6 +38,8 @@ For each discovered batch job, extract:
 | Output Targets | Files, databases, queues, APIs produced |
 | Restart/Recovery | Checkpoint support, skip policies, retry configuration |
 | Java Version | Required JVM version from build config or manifest |
+| Concurrency Control | Singleton enforcement, distributed locking (Shedlock, Quartz clustering), concurrencyPolicy |
+| Liveness/Health | Health check endpoints, liveness probes configured, timeout configurations |
 
 ### Step 3: Dependency Audit
 Parse build files to identify:
@@ -62,6 +64,13 @@ Parse build files to identify:
 - Identify schedule conflicts (jobs competing for same time window)
 - Flag jobs with no defined schedule (manual-only or triggered by external systems)
 - Identify batch chains (Job B depends on Job A completing)
+
+**Batch Window vs Business Requirements Analysis:**
+- Calculate total batch window (earliest job start to latest job end)
+- Compare against available processing window (e.g., overnight maintenance)
+- Flag batch chains that exceed their allocated window
+- Identify jobs running during business hours (may impact Cloud SQL/AlloyDB performance)
+- Note jobs with strict completion deadlines (e.g., must complete before market open)
 
 ### Step 5: Output Inventory Report
 
@@ -88,6 +97,19 @@ Parse build files to identify:
 - NEEDS_WORK: Has state, uses app server features → requires refactoring
 - COMPLEX: Deep EJB/app server integration → significant rewrite needed
 
+**GCP Migration Targets:**
+- Cloud Composer (Airflow): complex DAGs with branching and conditional logic
+- Cloud Workflows: simpler sequential chains with Cloud Run Jobs as steps
+- Cloud Run Jobs: containerized batch jobs with scale-to-zero
+- Cloud Scheduler + Cloud Run Jobs: cron-triggered containerized execution
+- Dataflow (Apache Beam): streaming and batch data processing pipelines
+
+**GKE CronJob Considerations:**
+- `backoffLimit` and `activeDeadlineSeconds` for timeout management
+- `livenessProbe` and `startupProbe` for long-running batch containers
+- `concurrencyPolicy` (Forbid vs Replace vs Allow) for singleton enforcement
+- Node auto-provisioning for cost-optimized batch workloads
+
 ## HTML Report Output
 
 After generating the inventory, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
@@ -108,3 +130,5 @@ Write the HTML file to `~/.agent/diagrams/batch-inventory.html` and open it in t
 - Flag jobs with no tests as higher risk
 - Note jobs that use file-system dependencies (specific paths, NFS mounts)
 - Cross-reference with `batch-to-serverless` skill output if available
+- Analyze batch window utilization and flag jobs exceeding their allocated processing window
+- Note distributed locking patterns (Shedlock, Quartz clustering) that must be preserved in GKE/Cloud Run migration

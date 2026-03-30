@@ -37,6 +37,12 @@ Build a comprehensive bill of materials:
 - Parse lock files (pom.xml effective-pom, gradle.lockfile, package-lock.json, poetry.lock, go.sum, Gemfile.lock)
 - Note total dependency count vs direct dependency count
 
+**SBOM Format Output:**
+- Generate SBOM in CycloneDX 1.5+ JSON format (primary — security-focused)
+- Generate SBOM in SPDX 2.3 JSON format (secondary — license compliance)
+- Include PURL (Package URL) identifiers for all dependencies
+- Reference SLSA framework for supply chain integrity assessment (Cloud Build provides SLSA Level 3)
+
 **Runtime Components:**
 - App server type and version
 - JVM/CLR/runtime version
@@ -64,6 +70,26 @@ Cross-reference every component against known EOL dates:
 | Python 3.7 | EOL Jun 2023 | HIGH |
 | WebSphere 8.5 | End of support approaching | HIGH |
 | WebLogic 12c | Maintenance mode | MEDIUM |
+
+**License Compliance Analysis:**
+- Classify licenses: permissive (MIT, Apache 2.0, BSD), weak copyleft (LGPL, MPL), strong copyleft (GPL, AGPL), commercial
+- Flag GPL contamination: GPL dependency in a non-GPL project
+- Flag AGPL in cloud-deployed applications (AGPL requires source disclosure for network use)
+- Identify dual-licensed dependencies where commercial license may be required
+- Flag dependencies with no declared license as UNKNOWN risk
+
+**Diamond Dependency Conflict Detection:**
+- Identify cases where two direct dependencies require different versions of the same transitive dependency
+- Flag conflicts that may cause runtime ClassNotFoundException or NoSuchMethodError
+- Note build tool's mediation strategy (Maven: nearest-wins, Gradle: newest-wins)
+
+**Vulnerability Scanning Integration:**
+Cross-reference SBOM with outputs from these tools if available:
+- Artifact Registry vulnerability scanning (for container images)
+- OWASP Dependency-Check: XML/JSON report
+- Trivy: `trivy fs --format json` output
+- Grype: `grype dir:. -o json` output
+If none available, recommend running at least one as a follow-up action.
 
 ### Step 4: Hardware & Infrastructure Dependencies
 Identify ties to specific infrastructure:
@@ -127,3 +153,5 @@ Write the HTML file to `~/.agent/diagrams/monolith-sbom.html` and open it in the
 - Never execute build commands or connect to live systems
 - Cross-reference with other inventory skills if output is available
 - When EOL dates are uncertain, note "approximate" and cite source
+- Output SBOM in CycloneDX and SPDX formats for interoperability with security and compliance tooling
+- Flag license compliance risks, especially GPL contamination and AGPL in cloud deployments

@@ -25,6 +25,8 @@ Build a complete inventory of all addressable components:
 | Message Listeners | `@JmsListener`, `@KafkaListener`, `@RabbitListener`, event handlers |
 | Stored Procedures | Database DDL, procedure/function definitions |
 | ESB Routes | ESB flow definitions, endpoint configs |
+| Configuration entries | Unused properties in application.yml/.properties, unused Spring XML beans, unused Maven profiles |
+| Feature flags | Permanently disabled flags in LaunchDarkly/Unleash/Togglz (stale flags) |
 | Configuration Classes | `@Configuration`, `@Bean`, XML bean definitions |
 | UI Components | React/Angular/Vue components, JSP/Thymeleaf templates |
 
@@ -62,6 +64,14 @@ If execution data is available, cross-reference with static inventory:
 | Message broker metrics | Queue/topic consumer activity |
 | Scheduler logs | Job execution history |
 
+**Production Code Coverage Approach:**
+If production instrumentation is available:
+- JaCoCo agent in production mode: collect class/method-level execution data over 30+ days
+- OpenTelemetry code-level instrumentation on Cloud Run/GKE
+- Cloud Trace span analysis for endpoint-level execution tracking
+- Classes with zero production hits over a full business cycle are strong dead code candidates
+- Higher confidence than static analysis alone
+
 **Analysis Window:** Recommend minimum 12 months to account for:
 - Year-end processing (annual jobs)
 - Seasonal features (holiday promotions, tax season)
@@ -77,6 +87,14 @@ Rate each candidate dead component:
 | MEDIUM | No runtime hits but has static references -- may be conditional, feature-flagged, or reflection-accessed | Manual review required -- document for team decision |
 | LOW | Has references but suspicious patterns: feature-flagged off, behind disabled config, unreachable code paths | Flag for investigation -- may be intentionally disabled |
 | EXCLUDE | Test-only code, documentation, build tooling | Separate from production dead code analysis |
+
+**Compliance and Audit Code Handling:**
+Before flagging code as dead, check if it serves a compliance/audit purpose:
+- Regulatory reporting code (runs quarterly or annually)
+- SOX compliance audit trails
+- HIPAA audit logging
+- PCI-DSS encryption/tokenization utilities
+Mark such code as EXCLUDE with reason "compliance/audit" even if rarely executed
 
 ### Step 5: Output
 
@@ -108,6 +126,16 @@ Rate each candidate dead component:
    - Test suite reduction estimate
    - Dependency reduction (libraries only used by dead code)
 
+6. **Tooling Recommendations:**
+   Recommend complementary static analysis tools:
+   - SonarQube: unused code rules, cognitive complexity analysis
+   - UCDetector (Eclipse plugin): unused public methods and classes
+   - SpotBugs: dead store detection, unused field detection
+   - IntelliJ IDEA inspections: unused declaration analysis
+
+7. **SARIF Report:**
+   Optionally generate a SARIF (Static Analysis Results Interchange Format) JSON file for integration with CI/CD pipelines and code review tools.
+
 ## HTML Report Output
 
 After generating the dead code analysis, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
@@ -130,3 +158,6 @@ Write the HTML file to `~/.agent/diagrams/dead-code-report.html` and open it in 
 - Flag disaster recovery and failover code separately -- it's intentionally rarely executed
 - If no production data is available, rely on static analysis only and clearly note reduced confidence
 - Cross-reference with other inventory skill outputs if available
+- Never flag compliance/audit code as dead without explicit team confirmation
+- Recommend SARIF output format for CI/CD integration
+- Reference SonarQube, UCDetector, and SpotBugs as complementary tooling
