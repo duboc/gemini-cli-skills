@@ -64,6 +64,12 @@ Skills for assessing, mapping, and modernizing legacy enterprise applications ac
 | [batch-to-serverless](skills/batch-to-serverless/) | Draft Cloud Run, K8s CronJob, and serverless configs to replace legacy batch applications | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- batch-to-serverless` |
 | [storedproc-to-microservice](skills/storedproc-to-microservice/) | Extract stored procedure logic into microservices with OpenAPI specs and migration plans | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- storedproc-to-microservice` |
 
+#### Orchestration
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [app-modernization-orchestrator](skills/app-modernization-orchestrator/) | Orchestrate the full modernization lifecycle across all 4 phases, coordinating 11 skills with state management and executive dashboards | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- app-modernization-orchestrator` |
+
 ## Installation
 
 ### Method 1: Gemini CLI native install

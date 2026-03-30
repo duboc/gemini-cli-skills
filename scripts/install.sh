@@ -59,6 +59,9 @@ Available skills:
   esb-to-event-driven       Design event-driven ESB replacements
   batch-to-serverless       Migrate batch jobs to Cloud Run / K8s CronJobs
   storedproc-to-microservice Extract stored procs to microservices
+
+  # App Modernization — Orchestration
+  app-modernization-orchestrator  Orchestrate full modernization lifecycle
 EOF
 }
 
