@@ -27,6 +27,42 @@ A collection of reusable skills for [Gemini CLI](https://github.com/google-gemin
 | [feature-spec](skills/feature-spec/) | Write structured product requirements documents (PRDs) with problem statements, user stories, requirements, and success metrics | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- feature-spec` |
 | [system-design](skills/system-design/) | Design systems, services, and architectures with explicit trade-off analysis | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- system-design` |
 | [documentation](skills/documentation/) | Write and maintain technical documentation, READMEs, API docs, runbooks, and architecture docs | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- documentation` |
+| [visual-explainer](skills/visual-explainer/) | Generate beautiful, self-contained HTML pages that visually explain systems, code changes, plans, and data | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- visual-explainer` |
+
+### App Modernization
+
+Skills for assessing, mapping, and modernizing legacy enterprise applications across four phases.
+
+#### Phase 1: Component Inventory
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [stored-proc-analyzer](skills/stored-proc-analyzer/) | Parse database stored procedures (PL/SQL, T-SQL), classify by complexity, and cross-reference with DB telemetry | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- stored-proc-analyzer` |
+| [esb-cataloger](skills/esb-cataloger/) | Ingest ESB configurations to produce a consumer/producer matrix by payload and protocol | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- esb-cataloger` |
+| [batch-app-scanner](skills/batch-app-scanner/) | Catalog EJB/Spring Batch jobs, map schedules, and flag outdated dependencies | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- batch-app-scanner` |
+| [monolith-sbom](skills/monolith-sbom/) | Build a software bill of materials flagging deprecated stacks and EOL components | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- monolith-sbom` |
+
+#### Phase 2: Dependency & Flow Mapping
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [dependency-flow-mapper](skills/dependency-flow-mapper/) | Trace sync/async execution paths, detect shared databases, and build dependency graphs | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- dependency-flow-mapper` |
+| [esb-routing-extractor](skills/esb-routing-extractor/) | Deep-extract ESB routing logic separating transparent routing from embedded business rules | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- esb-routing-extractor` |
+
+#### Phase 3: Business & Risk Identification
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [business-risk-assessor](skills/business-risk-assessor/) | Correlate transaction volumes with code complexity and churn to prioritize modernization targets | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- business-risk-assessor` |
+| [dead-code-detector](skills/dead-code-detector/) | Cross-reference static analysis with production execution data to flag zero-hit components | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- dead-code-detector` |
+
+#### Phase 4: Target Architecture
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [esb-to-event-driven](skills/esb-to-event-driven/) | Design event-driven replacements for ESB integrations using Pub/Sub or Kafka | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- esb-to-event-driven` |
+| [batch-to-serverless](skills/batch-to-serverless/) | Draft Cloud Run, K8s CronJob, and serverless configs to replace legacy batch applications | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- batch-to-serverless` |
+| [storedproc-to-microservice](skills/storedproc-to-microservice/) | Extract stored procedure logic into microservices with OpenAPI specs and migration plans | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- storedproc-to-microservice` |
 
 ## Installation
 
