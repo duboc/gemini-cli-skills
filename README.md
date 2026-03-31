@@ -70,6 +70,47 @@ Skills for assessing, mapping, and modernizing legacy enterprise applications ac
 |-------|-------------|---------|
 | [app-modernization-orchestrator](skills/app-modernization-orchestrator/) | Orchestrate the full modernization lifecycle across all 4 phases, coordinating 11 skills with state management and executive dashboards | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- app-modernization-orchestrator` |
 
+### Database Migration (Sybase to Cloud Spanner)
+
+Skills for migrating legacy Sybase ASE/IQ databases to Cloud Spanner and BigQuery in financial enterprise environments.
+
+#### Phase 1: Sybase Inventory & Discovery
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [sybase-tsql-analyzer](skills/sybase-tsql-analyzer/) | Parse Sybase T-SQL stored procedures, classify by complexity, and flag Spanner-incompatible constructs | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-tsql-analyzer` |
+| [sybase-schema-profiler](skills/sybase-schema-profiler/) | Profile Sybase schemas, data types, and indexes to assess Spanner conversion complexity and hotspot risks | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-schema-profiler` |
+| [sybase-replication-mapper](skills/sybase-replication-mapper/) | Catalog Replication Server configs and topology to design Change Streams and Pub/Sub replacements | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-replication-mapper` |
+| [sybase-integration-cataloger](skills/sybase-integration-cataloger/) | Catalog Open Client/Server, JDBC, PowerBuilder, Crystal Reports, MQ, and FIX/SWIFT connections | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-integration-cataloger` |
+
+#### Phase 2: Data Flow & Dependency Mapping
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [sybase-data-flow-mapper](skills/sybase-data-flow-mapper/) | Trace cross-database references, proxy table federations, and batch ETL chains for migration ordering | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-data-flow-mapper` |
+| [sybase-transaction-analyzer](skills/sybase-transaction-analyzer/) | Analyze transaction patterns, isolation levels, and locking behavior for Spanner transaction strategy | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-transaction-analyzer` |
+| [sybase-performance-profiler](skills/sybase-performance-profiler/) | Profile query performance from MDA tables to design Spanner indexes and read/write split strategies | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-performance-profiler` |
+
+#### Phase 3: Risk & Scope Reduction
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [sybase-dead-component-detector](skills/sybase-dead-component-detector/) | Identify unused Sybase objects safe for migration exclusion with financial domain preservation rules | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-dead-component-detector` |
+| [sybase-analytics-assessor](skills/sybase-analytics-assessor/) | Assess OLTP vs analytics workloads to recommend Spanner/BigQuery split strategy | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-analytics-assessor` |
+
+#### Phase 4: Spanner Target Architecture
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [sybase-to-spanner-schema-designer](skills/sybase-to-spanner-schema-designer/) | Design Spanner schema with interleaved tables, bit-reversed keys, Change Streams, and optimized DDL | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-to-spanner-schema-designer` |
+| [tsql-to-application-extractor](skills/tsql-to-application-extractor/) | Extract T-SQL business logic into Cloud Run microservices with Spanner client libs and saga patterns | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- tsql-to-application-extractor` |
+
+#### Orchestration
+
+| Skill | Description | Install |
+|-------|-------------|---------|
+| [sybase-spanner-migration-orchestrator](skills/sybase-spanner-migration-orchestrator/) | Orchestrate the full Sybase-to-Spanner migration lifecycle across 4 phases, coordinating 11 skills with compliance gates and executive dashboards | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- sybase-spanner-migration-orchestrator` |
+
 ## Installation
 
 ### Method 1: Gemini CLI native install
