@@ -120,7 +120,7 @@ After generating the dependency analysis, render the results as a self-contained
 - **Batch chain diagram** as a Mermaid flowchart showing the critical path with parallelization opportunities highlighted
 - **Modernization blockers list** as a prioritized table with dependency descriptions and recommended resolution order
 
-Write the HTML file to `~/.agent/diagrams/dependency-map.html` and open it in the browser.
+Write the HTML file to `./diagrams/dependency-map.html` and open it in the browser.
 
 ## Guidelines
 - Distinguish compile-time vs runtime dependencies

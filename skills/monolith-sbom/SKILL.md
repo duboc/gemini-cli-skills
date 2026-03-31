@@ -143,7 +143,7 @@ After generating the SBOM report, render the results as a self-contained HTML pa
 - **Technology stack diagram** rendered as a Mermaid diagram showing layers and their versions
 - **Modernization priority list** as a ranked table with severity indicators
 
-Write the HTML file to `~/.agent/diagrams/monolith-sbom.html` and open it in the browser.
+Write the HTML file to `./diagrams/monolith-sbom.html` and open it in the browser.
 
 ## Guidelines
 - Auto-detect language and build system — do not ask

@@ -15,5 +15,5 @@ Mental model snapshot for context-switching back to a project.
    - Key files map (entry points, configs, tests)
    - Current state: what's in progress, what's blocked
    - Quick links: repo, docs, CI, deployments
-4. Write to ~/.agent/diagrams/<project-name>-recap.html
+4. Write to ./diagrams/<project-name>-recap.html
 5. Open in browser

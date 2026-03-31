@@ -264,7 +264,7 @@ After producing the unified plan, render an executive dashboard as a self-contai
 - **Cost comparison dashboard** with current vs projected costs (Chart.js bar chart)
 - **Risk register table** with severity indicators and mitigation status
 
-Write the HTML file to `~/.agent/diagrams/modernization-dashboard.html` and open it in the browser.
+Write the HTML file to `./diagrams/modernization-dashboard.html` and open it in the browser.
 
 ## State Management
 

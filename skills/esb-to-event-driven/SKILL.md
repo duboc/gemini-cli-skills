@@ -167,7 +167,7 @@ After generating the architecture design, render the results as a self-contained
 - **Risk register table** with severity indicators for ordering guarantees, exactly-once requirements, and synchronous fallback needs
 - **Topic design table** with topic names, partitioning, retention policy, and DLQ configuration
 
-Write the HTML file to `~/.agent/diagrams/esb-to-event-driven.html` and open it in the browser.
+Write the HTML file to `./diagrams/esb-to-event-driven.html` and open it in the browser.
 
 ## Guidelines
 - Prefer choreography over orchestration where possible (reduces central coordination)

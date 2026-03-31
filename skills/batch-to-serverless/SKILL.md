@@ -200,7 +200,7 @@ After generating the migration plan, render the results as a self-contained HTML
 - **Generated configuration preview** with collapsible sections showing Cloud Run Job YAML, K8s CronJob YAML, and Dockerfile snippets with syntax highlighting
 - **Migration checklist** as an interactive table with status indicators per job
 
-Write the HTML file to `~/.agent/diagrams/batch-to-serverless.html` and open it in the browser.
+Write the HTML file to `./diagrams/batch-to-serverless.html` and open it in the browser.
 
 ## Guidelines
 - Preserve idempotency — migrated jobs must be safe to retry

@@ -14,7 +14,7 @@ Or append `--slides` to any other command.
 5. Ensure every section of source material is covered — add more slides rather than cut content
 6. Choose a preset (Midnight Editorial, Warm Signal, Terminal Mono, Swiss Clean)
 7. Generate HTML with full navigation (arrows, keyboard, touch, progress bar)
-8. Write to ~/.agent/diagrams/<topic-slug>-slides.html
+8. Write to ./diagrams/<topic-slug>-slides.html
 9. Open in browser
 
 ## Rules

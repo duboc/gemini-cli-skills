@@ -13,7 +13,7 @@ Generate a visual implementation plan for a feature or task.
 5. Include file structure with descriptions (not full code)
 6. Key code snippets in collapsible sections
 7. Generate self-contained HTML with Blueprint aesthetic
-8. Write to ~/.agent/diagrams/<plan-slug>.html
+8. Write to ./diagrams/<plan-slug>.html
 9. Open in browser
 
 ## Output Structure

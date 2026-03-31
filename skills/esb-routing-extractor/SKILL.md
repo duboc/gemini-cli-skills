@@ -134,7 +134,7 @@ After generating the routing analysis, render the results as a self-contained HT
 - **Migration complexity matrix** as a styled table with color-coded scores per complexity factor
 - **Route dependency map** rendered as a Mermaid diagram showing route-to-system dependencies
 
-Write the HTML file to `~/.agent/diagrams/esb-routing-analysis.html` and open it in the browser.
+Write the HTML file to `./diagrams/esb-routing-analysis.html` and open it in the browser.
 
 ## Guidelines
 - Preserve exact routing predicates in output — do not paraphrase XPath/JSONPath expressions

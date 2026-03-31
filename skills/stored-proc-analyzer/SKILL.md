@@ -197,7 +197,7 @@ After generating the inventory report, render the results as a self-contained HT
 - **Dependency graph** rendered as a Mermaid diagram showing procedure call chains
 - **Telemetry heat map** (if data available) showing CPU-intensive procedures
 
-Write the HTML file to `~/.agent/diagrams/stored-proc-inventory.html` and open it in the browser.
+Write the HTML file to `./diagrams/stored-proc-inventory.html` and open it in the browser.
 
 ## Guidelines
 

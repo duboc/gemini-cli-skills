@@ -16,7 +16,7 @@ Visual diff review with architecture comparison and code review.
    - File-by-file change table with status indicators
    - Key code changes with before/after comparison
    - Risk flags (breaking changes, security concerns, missing tests)
-6. Write to ~/.agent/diagrams/diff-review-<date>.html
+6. Write to ./diagrams/diff-review-<date>.html
 7. Open in browser
 
 ## Output Sections

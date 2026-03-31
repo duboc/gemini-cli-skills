@@ -78,7 +78,7 @@ After generating the catalog, render the results as a self-contained HTML page u
 - **Risk assessment table** with color-coded indicators for hardcoded URLs, missing error handling, deprecated protocols
 - **Modernization readiness breakdown** showing SIMPLE_REPLACEMENT vs NEEDS_REDESIGN vs COMPLEX counts
 
-Write the HTML file to `~/.agent/diagrams/esb-catalog.html` and open it in the browser.
+Write the HTML file to `./diagrams/esb-catalog.html` and open it in the browser.
 
 ## Guidelines
 - Auto-detect ESB platform from config file patterns

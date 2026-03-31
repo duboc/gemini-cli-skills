@@ -220,7 +220,7 @@ After generating the extraction plan, render the results as a self-contained HTM
 - **Business rules catalog** as a styled table with rule descriptions, input/output contracts, and test case suggestions
 - **Migration sequence diagram** as a Mermaid flowchart showing dependency-aware extraction order
 
-Write the HTML file to `~/.agent/diagrams/storedproc-to-microservice.html` and open it in the browser.
+Write the HTML file to `./diagrams/storedproc-to-microservice.html` and open it in the browser.
 
 ## Guidelines
 - Preserve transactional guarantees — document where distributed transactions may be needed

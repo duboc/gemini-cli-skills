@@ -16,5 +16,5 @@ Compare a plan against the codebase with risk assessment.
    - Risk assessment with severity indicators
    - Dependency analysis (what the plan depends on)
    - Recommended adjustments
-6. Write to ~/.agent/diagrams/plan-review-<date>.html
+6. Write to ./diagrams/plan-review-<date>.html
 7. Open in browser

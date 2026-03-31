@@ -137,11 +137,11 @@ Read the reference material before generating. Don't memorize it — read it eac
 **Forbidden animations:** Animated glowing box-shadows, pulsing/breathing effects, continuous animations after page load.
 
 ### 4. Deliver
-Output location: Write to `~/.agent/diagrams/`. Use descriptive filenames.
+Output location: Write to `./diagrams/`. Use descriptive filenames.
 
 Open in browser:
-- macOS: `open ~/.agent/diagrams/filename.html`
-- Linux: `xdg-open ~/.agent/diagrams/filename.html`
+- macOS: `open ./diagrams/filename.html`
+- Linux: `xdg-open ./diagrams/filename.html`
 
 ## Diagram Types
 

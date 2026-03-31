@@ -121,7 +121,7 @@ After generating the inventory, render the results as a self-contained HTML page
 - **Modernization readiness chart** (Chart.js) showing READY vs NEEDS_WORK vs COMPLEX distribution
 - **Batch chain diagram** rendered as a Mermaid flowchart showing job dependencies and execution order
 
-Write the HTML file to `~/.agent/diagrams/batch-inventory.html` and open it in the browser.
+Write the HTML file to `./diagrams/batch-inventory.html` and open it in the browser.
 
 ## Guidelines
 - Auto-detect build system and batch framework

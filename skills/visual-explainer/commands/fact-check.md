@@ -14,5 +14,5 @@ Verify accuracy of a document against actual code.
    - Claim audit table with status indicators (✓ verified, ✗ incorrect, ? unverifiable)
    - Details per claim: what the doc says vs what the code shows
    - Recommended corrections
-5. Write to ~/.agent/diagrams/fact-check-<doc-name>.html
+5. Write to ./diagrams/fact-check-<doc-name>.html
 6. Open in browser

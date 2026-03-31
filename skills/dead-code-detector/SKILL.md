@@ -147,7 +147,7 @@ After generating the dead code analysis, render the results as a self-contained 
 - **Impact assessment cards** showing build time reduction, test suite reduction, and dependency reduction estimates
 - **Exclusions and warnings table** with explanations for components excluded from the dead code analysis
 
-Write the HTML file to `~/.agent/diagrams/dead-code-report.html` and open it in the browser.
+Write the HTML file to `./diagrams/dead-code-report.html` and open it in the browser.
 
 ## Guidelines
 - NEVER mark reflection-accessed code as dead without a manual review flag

@@ -161,7 +161,7 @@ After generating the risk assessment, render the results as a self-contained HTM
 - **Modernization sequence** as a numbered timeline showing recommended order with ROI justification
 - **Module detail cards** with collapsible sections showing per-module metrics, git churn data, and recommended action
 
-Write the HTML file to `~/.agent/diagrams/business-risk-assessment.html` and open it in the browser.
+Write the HTML file to `./diagrams/business-risk-assessment.html` and open it in the browser.
 
 ## Guidelines
 - Use git log analysis when telemetry is unavailable — it is always available

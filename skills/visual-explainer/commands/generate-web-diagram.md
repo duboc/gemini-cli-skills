@@ -11,7 +11,7 @@ Generate an HTML diagram for any topic. This is the general-purpose diagram comm
 3. Select the appropriate rendering approach (Mermaid vs CSS Grid vs hybrid)
 4. Read the relevant template from ./templates/
 5. Generate a self-contained HTML file
-6. Write to ~/.agent/diagrams/<topic-slug>.html
+6. Write to ./diagrams/<topic-slug>.html
 7. Open in browser
 
 ## Input
