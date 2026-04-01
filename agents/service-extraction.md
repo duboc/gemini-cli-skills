@@ -227,22 +227,22 @@ main:
         try:
           call: http.post
           args:
-            url: ${SERVICE_1_URL}
-            body: ${request}
+            url: SERVICE_1_URL
+            body: request
           result: step_1_result
         except:
           as: e
           steps:
             - step_1_failed:
-                raise: ${e}
+                raise: e
 
     - step_2_execute:
         try:
           call: http.post
           args:
-            url: ${SERVICE_2_URL}
+            url: SERVICE_2_URL
             body:
-              input: ${step_1_result.body}
+              input: step_1_result.body
           result: step_2_result
         except:
           as: e
@@ -250,13 +250,15 @@ main:
             - compensate_step_1:
                 call: http.post
                 args:
-                  url: ${SERVICE_1_URL}/compensate
+                  url: SERVICE_1_URL/compensate
                   body:
-                    id: ${step_1_result.body.id}
+                    id: step_1_result.body.id
                     reason: "Step 2 failed"
             - step_2_raise:
-                raise: ${e}
+                raise: e
 ```
+
+Note: In actual Cloud Workflows YAML, these values use the expression syntax. The template above shows the logical structure — wrap values in the Cloud Workflows expression syntax when generating real workflow definitions.
 
 For each saga, produce a compensation table:
 
