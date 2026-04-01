@@ -3,14 +3,7 @@ name: migration-orchestrator
 description: "Orchestrate the full Sybase-to-Cloud Spanner migration lifecycle across 4 phases. Coordinate specialized agents via report files, enforce compliance gates, manage migration state, and produce unified migration plans with executive dashboards. Use for: end-to-end Sybase migration, full database migration assessment, migration program coordination."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
-  - run_in_terminal
-  - web_search
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.2
 max_turns: 50

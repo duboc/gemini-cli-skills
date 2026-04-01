@@ -3,12 +3,7 @@ name: dead-component
 description: "Cross-reference static analysis with execution data to identify unused Sybase stored procedures, dormant tables, dead Java code, and obsolete views. Produces reports 04-dead-components.md and 17-dead-code.md for migration scope reduction. Use for: finding dead Sybase code, reducing migration scope, identifying unused database objects."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.1
 max_turns: 30

@@ -3,12 +3,7 @@ name: spanner-schema
 description: "Design optimized Cloud Spanner schema with interleaved table hierarchies, bit-reversed sequence keys, secondary indexes with STORING clauses, commit timestamps, and Change Stream definitions from Sybase ASE source schemas. Produces report 18-spanner-schema-design.md with complete Spanner DDL. Use for: designing Spanner schemas, converting Sybase DDL, planning interleaved tables."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.2
 max_turns: 40

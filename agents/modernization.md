@@ -3,12 +3,7 @@ name: modernization
 description: "Design event-driven replacements for ESB integrations using Pub/Sub and Apigee, Cloud Run Jobs and Cloud Workflows for batch applications, and Spring Boot upgrade paths. Produces reports 21-event-driven-design.md, 22-batch-serverless.md, and 23-spring-boot-upgrade.md. Use for: ESB modernization, batch-to-serverless migration, Spring Boot upgrades."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.3
 max_turns: 40

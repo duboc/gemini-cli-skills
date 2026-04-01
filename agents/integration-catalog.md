@@ -3,12 +3,7 @@ name: integration-catalog
 description: "Catalog external integration points (JDBC, ODBC, ESB, Open Client/Server, web services) and deep-extract ESB routing logic separating transparent routing from embedded business rules. Produces reports 09-integration-catalog.md, 10-esb-catalog.md, and 11-esb-routing.md. Use for: cataloging Sybase integrations, analyzing ESB message flows, extracting ESB routing logic."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.1
 max_turns: 30

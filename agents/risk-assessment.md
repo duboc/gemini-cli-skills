@@ -3,12 +3,7 @@ name: risk-assessment
 description: "Correlate transaction volumes with business rule complexity, profile query performance, analyze transaction patterns and isolation levels, and classify OLTP vs analytics workloads for Spanner/BigQuery split. Produces reports 13-business-risk.md, 14-performance-profile.md, 15-transaction-analysis.md, and 16-analytics-assessment.md. Use for: business risk scoring, Sybase performance profiling, transaction analysis, OLTP/analytics classification."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.2
 max_turns: 40

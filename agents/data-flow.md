@@ -3,12 +3,7 @@ name: data-flow
 description: "Trace cross-database references, proxy table federations, replication topology, batch ETL chains, and sync/async execution paths across Sybase environments. Produces reports 07-data-flow-map.md, 08-dependency-flow.md, and 12-replication-map.md for migration ordering. Use for: mapping Sybase data flows, tracing cross-database dependencies, cataloging replication topology."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.1
 max_turns: 40

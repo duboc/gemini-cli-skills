@@ -3,13 +3,7 @@ name: sybase-inventory
 description: "Profile Sybase ASE schemas, data types, indexes, stored procedures, batch jobs, and technology SBOM. Produces reports 01-06 covering complete database and application inventory for Cloud Spanner migration. Use for: Sybase schema profiling, T-SQL analysis, stored procedure classification, batch job cataloging, SBOM generation."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
-  - run_in_terminal
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.1
 max_turns: 50

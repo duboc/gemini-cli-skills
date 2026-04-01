@@ -3,12 +3,7 @@ name: service-extraction
 description: "Extract T-SQL business logic from Sybase stored procedures into Cloud Run microservices with Spanner client libraries, OpenAPI 3.0 specs, saga patterns for distributed transactions, and parallel-run validation frameworks. Produces reports 19-tsql-extraction.md and 20-microservice-design.md. Use for: extracting stored procedure logic, designing microservices from T-SQL, generating Cloud Run service scaffolding."
 kind: local
 tools:
-  - read_file
-  - grep_search
-  - list_directory
-  - read_many_files
-  - search_files
-  - write_file
+  - "*"
 model: gemini-3.1-pro-preview
 temperature: 0.3
 max_turns: 40
