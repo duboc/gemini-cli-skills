@@ -2,6 +2,123 @@
 
 A collection of reusable skills for [Gemini CLI](https://github.com/google-gemini/gemini-cli). Each skill is self-contained and can be installed independently.
 
+---
+
+## Migration Subagents: Sybase to Cloud Spanner
+
+Nine specialized Gemini CLI subagents that coordinate a complete Sybase ASE to Cloud Spanner migration pipeline. Each agent produces numbered reports that downstream agents consume as prerequisites -- no recursive subagent calls, just file-based coordination.
+
+### Quick Install
+
+```bash
+# Install all 9 agents + settings (user scope, recommended)
+curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install-agents.sh | bash
+
+# Install to current project only
+curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install-agents.sh | bash -s -- --scope project
+```
+
+### Agent Catalog
+
+| # | Agent | Phase | Reports | Description |
+|---|-------|:-----:|---------|-------------|
+| 1 | `@sybase-inventory` | 1 | 01-03, 05-06 | Schema profiling, T-SQL analysis, stored proc complexity, SBOM, batch job scanning |
+| 2 | `@dead-component` | 1, 3 | 04, 17 | Dead code detection with financial domain preservation rules, scope reduction |
+| 3 | `@data-flow` | 2 | 07, 08, 12 | Data flow mapping, cross-DB dependency tracing, replication topology |
+| 4 | `@integration-catalog` | 2 | 09-11 | JDBC/SOAP/MQ integration catalog, ESB analysis, routing extraction |
+| 5 | `@risk-assessment` | 3 | 13-16 | Business risk scoring, performance profiling, transaction analysis, OLTP/analytics split |
+| 6 | `@spanner-schema` | 4 | 18 | Cloud Spanner DDL with interleaved tables, bit-reversed sequences, Change Streams |
+| 7 | `@service-extraction` | 4 | 19-20 | T-SQL business logic to Cloud Run microservices with OpenAPI specs |
+| 8 | `@modernization` | 4 | 21-23 | ESB-to-event-driven, batch-to-serverless, Spring Boot upgrade paths |
+| 9 | `@migration-orchestrator` | All | 24 | Master orchestrator: 30-question intake, phase gates, state management |
+
+### Execution Order
+
+```
+Phase 1 (parallel):  @sybase-inventory + @dead-component
+Phase 2 (parallel):  @data-flow + @integration-catalog
+Phase 3:             @risk-assessment + @dead-component (pass 2)
+Phase 4 (parallel):  @spanner-schema + @service-extraction + @modernization
+Synthesis:           @migration-orchestrator
+```
+
+### Usage
+
+1. **Place your Sybase source code** in a project directory (SQL files, Java apps, configs).
+
+2. **Start with the orchestrator** for guided execution:
+   ```
+   gemini> @migration-orchestrator Analyze this Sybase system for Cloud Spanner migration
+   ```
+
+3. **Or run individual agents** for targeted analysis:
+   ```
+   gemini> @sybase-inventory Profile the schema and stored procedures in this codebase
+   gemini> @risk-assessment Assess migration risks based on reports 01-12
+   gemini> @spanner-schema Design the Spanner schema from the inventory reports
+   ```
+
+4. **Reports are written** to `<project>/reports/` as numbered markdown files (01-24).
+
+### Architecture
+
+```
+                    +-------------------------+
+                    | migration-orchestrator  |
+                    |   (coordinates phases)  |
+                    +----------+--------------+
+                               |
+          Phase 1              |              Phase 2
+    +----------------+   +-----+-----+   +-------------------+
+    | sybase-        |   | dead-     |   | data-flow         |
+    | inventory      |   | component |   | integration-      |
+    | (01-03,05-06)  |   | (04, 17)  |   | catalog (07-12)   |
+    +-------+--------+   +-----+-----+   +---------+---------+
+            |                   |                   |
+            +-------------------+-------------------+
+                               |
+                          Phase 3
+                    +------------------+
+                    | risk-assessment  |
+                    | (13-16)          |
+                    +--------+---------+
+                             |
+          Phase 4            |
+    +-----------+   +--------+--------+   +----------------+
+    | spanner-  |   | service-        |   | modernization  |
+    | schema    |   | extraction      |   | (21-23)        |
+    | (18)      |   | (19-20)         |   |                |
+    +-----------+   +-----------------+   +----------------+
+```
+
+### Settings Configuration
+
+The agents include a `settings.json` with optimized runtime configurations (max turns, timeouts). The install script merges these automatically, or you can manually add to your `.gemini/settings.json`:
+
+```json
+{
+  "agents": {
+    "overrides": {
+      "sybase-inventory": { "enabled": true, "runConfig": { "maxTurns": 50, "maxTimeMinutes": 20 } },
+      "dead-component": { "enabled": true, "runConfig": { "maxTurns": 30, "maxTimeMinutes": 15 } },
+      "data-flow": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 15 } },
+      "integration-catalog": { "enabled": true, "runConfig": { "maxTurns": 30, "maxTimeMinutes": 15 } },
+      "risk-assessment": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 20 } },
+      "spanner-schema": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 20 } },
+      "service-extraction": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 20 } },
+      "modernization": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 15 } },
+      "migration-orchestrator": { "enabled": true, "runConfig": { "maxTurns": 50, "maxTimeMinutes": 30 } }
+    }
+  }
+}
+```
+
+### Model
+
+All agents use `gemini-3.1-pro-preview` with low temperature (0.1-0.3) for deterministic analysis output.
+
+---
+
 ## Available Skills
 
 | Skill | Description | Install |
