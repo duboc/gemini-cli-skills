@@ -44,6 +44,7 @@ For prose accents, see "Prose Page Elements" in ./references/css-patterns.md. Fo
 - Editorial (serif headlines like Instrument Serif or Crimson Pro, generous whitespace, muted earth tones or deep navy + gold)
 - Paper/ink (warm cream #faf7f5 background, terracotta/sage accents, informal feel)
 - Monochrome terminal (green/amber on near-black, monospace everything, CRT glow optional)
+- Google Cloud (white background, Google Sans font, Google brand four-color accents blue/red/yellow/green, clean corporate feel) — use for GCP architecture, migration plans, cloud-themed content. See preset-gcloud in ./references/slide-patterns.md
 
 **Flexible aesthetics (use with caution):**
 - IDE-inspired (borrow a real, named color scheme: Dracula, Nord, Catppuccin Mocha/Latte, Solarized Dark/Light, Gruvbox, One Dark, Rosé Pine) — commit to the actual palette, don't approximate

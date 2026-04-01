@@ -260,6 +260,7 @@ tl.add({
 | IBM Plex Sans | IBM Plex Mono | `family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500` | Enterprise, technical |
 | Bricolage Grotesque | Fragment Mono | `family=Bricolage+Grotesque:wght@400;600;700&family=Fragment+Mono` | Bold, modern |
 | Plus Jakarta Sans | Azeret Mono | `family=Plus+Jakarta+Sans:wght@400;500;700&family=Azeret+Mono:wght@400;500` | Startup, product |
+| Google Sans | Google Sans Mono | `family=Google+Sans:wght@400;500;700&family=Google+Sans+Mono:wght@400;500` | Google Cloud, GCP themes |
 
 ### Full CDN Link Example
 

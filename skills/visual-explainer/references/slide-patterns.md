@@ -669,3 +669,149 @@ Additional Swiss styling:
   border: 2px solid var(--color-text);
 }
 ```
+
+### 5. Google Cloud
+
+White background, Google Sans typography, Google brand four-color accents. Use this preset for Google Cloud-themed presentations, migration plans, and GCP architecture diagrams.
+
+```css
+:root {
+  --gcloud-blue: #4285F4;
+  --gcloud-green: #34A853;
+  --gcloud-yellow: #FBBC05;
+  --gcloud-red: #EA4335;
+  --gcloud-grey-900: #202124;
+  --gcloud-grey-700: #5F6368;
+  --gcloud-grey-200: #E8EAED;
+  --gcloud-grey-100: #F1F3F4;
+}
+
+.preset-gcloud {
+  --color-bg: #ffffff;
+  --color-surface: var(--gcloud-grey-100);
+  --color-elevated: #ffffff;
+  --color-text: var(--gcloud-grey-900);
+  --color-text-secondary: var(--gcloud-grey-700);
+  --color-muted: #9AA0A6;
+  --color-border: var(--gcloud-grey-200);
+  --color-accent: var(--gcloud-blue);
+  --color-accent-light: #669DF6;
+  --color-accent-muted: rgba(66, 133, 244, 0.15);
+  --color-accent-bg: rgba(66, 133, 244, 0.06);
+  --color-code-bg: var(--gcloud-grey-900);
+  --color-code-fg: #E8EAED;
+  --font-heading: 'Google Sans', Arial, sans-serif;
+  --font-body: 'Google Sans', Arial, sans-serif;
+  --font-mono: 'Google Sans Mono', 'Roboto Mono', monospace;
+}
+```
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+```
+
+Additional Google Cloud styling:
+
+```css
+/* Title styling */
+.preset-gcloud h1 {
+  font-size: 36pt;
+  font-weight: 700;
+  color: var(--gcloud-grey-900);
+}
+
+.preset-gcloud h2 {
+  font-size: 24pt;
+  font-weight: 700;
+  color: var(--gcloud-blue);
+}
+
+/* Section divider uses Google Blue */
+.preset-gcloud .ve-slide--divider {
+  background: var(--gcloud-blue);
+  color: #ffffff;
+}
+
+/* Cards with subtle rounded corners */
+.preset-gcloud .ve-card {
+  border-radius: 8px;
+  border: 1px solid var(--gcloud-grey-200);
+  background: #ffffff;
+}
+
+/* Bullet points in Google Blue */
+.preset-gcloud ul {
+  list-style: none;
+  padding-left: 20px;
+}
+.preset-gcloud li::before {
+  content: "\2022";
+  color: var(--gcloud-blue);
+  font-weight: bold;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+/* Four-color accent bar for hero cards */
+.preset-gcloud .ve-card--hero {
+  border-top: 4px solid;
+  border-image: linear-gradient(
+    to right,
+    var(--gcloud-blue) 25%,
+    var(--gcloud-red) 25%,
+    var(--gcloud-red) 50%,
+    var(--gcloud-yellow) 50%,
+    var(--gcloud-yellow) 75%,
+    var(--gcloud-green) 75%
+  ) 1;
+}
+
+/* KPI cards with Google colors */
+.preset-gcloud .kpi-card:nth-child(1) .kpi-value { color: var(--gcloud-blue); }
+.preset-gcloud .kpi-card:nth-child(2) .kpi-value { color: var(--gcloud-red); }
+.preset-gcloud .kpi-card:nth-child(3) .kpi-value { color: var(--gcloud-yellow); }
+.preset-gcloud .kpi-card:nth-child(4) .kpi-value { color: var(--gcloud-green); }
+
+/* Footer styling */
+.preset-gcloud .slide-footer {
+  font-size: 10pt;
+  color: var(--gcloud-grey-700);
+}
+
+/* Status badges using Google colors */
+.preset-gcloud .ve-badge--green::before  { background: var(--gcloud-green); }
+.preset-gcloud .ve-badge--red::before    { background: var(--gcloud-red); }
+.preset-gcloud .ve-badge--amber::before  { background: var(--gcloud-yellow); }
+.preset-gcloud .ve-badge--muted::before  { background: #9AA0A6; }
+
+/* Table header accent */
+.preset-gcloud th {
+  border-bottom: 2px solid var(--gcloud-blue);
+  color: var(--gcloud-grey-700);
+}
+
+/* Progress bar in Google Blue */
+.preset-gcloud .ve-progress-fill {
+  background: linear-gradient(90deg, var(--gcloud-blue), var(--gcloud-green));
+}
+```
+
+Mermaid theming for Google Cloud:
+
+```javascript
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'base',
+  themeVariables: {
+    primaryColor: '#E8F0FE',
+    primaryTextColor: '#202124',
+    primaryBorderColor: '#4285F4',
+    lineColor: '#5F6368',
+    secondaryColor: '#E6F4EA',
+    tertiaryColor: '#FEF7E0',
+    fontFamily: '"Google Sans", Arial, sans-serif',
+    fontSize: '14px'
+  }
+});
+```

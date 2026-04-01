@@ -601,3 +601,67 @@ Use three depth levels for visual hierarchy:
 | Elevated | `--color-elevated` | `#ffffff` | `#252540` | Modals, tooltips, dropdowns |
 
 Apply depth via borders and shadows rather than background alone for subtle differentiation in light mode.
+
+### Google Cloud Theme
+
+Use for GCP architecture, migration plans, and cloud-themed content. Uses Google brand colors and Google Sans typography.
+
+```css
+:root {
+  --gcloud-blue: #4285F4;
+  --gcloud-green: #34A853;
+  --gcloud-yellow: #FBBC05;
+  --gcloud-red: #EA4335;
+  --gcloud-grey-900: #202124;
+  --gcloud-grey-700: #5F6368;
+  --gcloud-grey-200: #E8EAED;
+  --gcloud-grey-100: #F1F3F4;
+}
+
+.preset-gcloud {
+  --color-bg: #ffffff;
+  --color-surface: var(--gcloud-grey-100);
+  --color-elevated: #ffffff;
+  --color-text: var(--gcloud-grey-900);
+  --color-text-secondary: var(--gcloud-grey-700);
+  --color-muted: #9AA0A6;
+  --color-border: var(--gcloud-grey-200);
+  --color-accent: var(--gcloud-blue);
+  --color-accent-light: #669DF6;
+  --color-accent-muted: rgba(66, 133, 244, 0.15);
+  --color-accent-bg: rgba(66, 133, 244, 0.06);
+  --color-code-bg: var(--gcloud-grey-900);
+  --color-code-fg: #E8EAED;
+  --font-heading: 'Google Sans', Arial, sans-serif;
+  --font-body: 'Google Sans', Arial, sans-serif;
+  --font-mono: 'Google Sans Mono', 'Roboto Mono', monospace;
+}
+```
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
+```
+
+Four-color accent patterns:
+
+```css
+/* Hero card with four-color top border */
+.preset-gcloud .ve-card--hero {
+  border-top: 4px solid;
+  border-image: linear-gradient(
+    to right,
+    var(--gcloud-blue) 25%,
+    var(--gcloud-red) 25%,
+    var(--gcloud-red) 50%,
+    var(--gcloud-yellow) 50%,
+    var(--gcloud-yellow) 75%,
+    var(--gcloud-green) 75%
+  ) 1;
+}
+
+/* Callout boxes with Google colors */
+.preset-gcloud .ve-callout--info    { border-color: var(--gcloud-blue);   background: rgba(66, 133, 244, 0.08); color: var(--gcloud-blue); }
+.preset-gcloud .ve-callout--success { border-color: var(--gcloud-green);  background: rgba(52, 168, 83, 0.08);  color: var(--gcloud-green); }
+.preset-gcloud .ve-callout--warning { border-color: var(--gcloud-yellow); background: rgba(251, 188, 5, 0.08);  color: #E37400; }
+.preset-gcloud .ve-callout--error   { border-color: var(--gcloud-red);    background: rgba(234, 67, 53, 0.08);  color: var(--gcloud-red); }
+```
