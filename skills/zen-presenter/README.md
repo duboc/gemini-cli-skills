@@ -1,18 +1,17 @@
 # Zen Presenter
 
-A Gemini CLI skill for generating MARP presentation decks that follow the **Presentation Zen** philosophy — minimal text, high visual impact, and storytelling-driven design. Outputs MARP Markdown, HTML slides, and PowerPoint.
+A Gemini CLI skill for generating MARP presentation decks that follow the **Presentation Zen** philosophy — minimal text, high visual impact, and storytelling-driven design. Uses Google identity styling and outputs self-contained HTML with optional PowerPoint export.
 
 ## What It Does
 
 This skill transforms any topic into a visually striking slide deck by applying Garr Reynolds' Presentation Zen principles. It guides Gemini through:
 
 1. **Topic discovery** — Captures the subject, audience, and core takeaway.
-2. **Design consultation** — Asks about theme, background images (optional), mood, and typography preferences before generating anything.
+2. **Design consultation** — Asks about background images (optional), mood, and typography preferences before generating anything.
 3. **Story arc planning** — Structures the deck as a narrative: hook, tension, exploration, climax, resolution.
 4. **Zen slide generation** — Produces MARP Markdown with maximum 10 words per slide, zero bullet points, and either full-bleed Unsplash backgrounds or clean theme-based design.
-5. **HTML slide conversion** — Converts each MARP slide into a standalone HTML file with proper dimensions and styling for PowerPoint conversion.
-6. **PowerPoint generation** — Uses `html2pptx` to convert HTML slides into a `.pptx` file with accurate positioning, shapes, and formatting.
-7. **Export guidance** — Provides instructions for all output formats: MARP Markdown, HTML, PowerPoint, and PDF.
+5. **HTML rendering** — Converts the MARP deck to a self-contained HTML file via Marp CLI that can be presented directly in any browser.
+6. **PowerPoint offer** — Asks the user if they want to export to `.pptx` via Marp CLI.
 
 ## When Does It Activate?
 
@@ -32,9 +31,9 @@ The skill activates when you ask Gemini to create presentations, slides, or deck
 |------|---------|
 | **Presentation Zen** | Restraint (Kanso), Naturalness (Shizen), Emptiness (Ma), signal-to-noise ratio |
 | **MARP Markdown** | Frontmatter directives, background images, filters, themes, custom themes, export commands |
-| **Visual Design** | Mood presets, typography styles, color schemes, image metaphor selection, slide type classes |
+| **Visual Design** | Mood presets, typography styles, image metaphor selection, slide type classes |
 | **Story Structure** | Narrative arcs, audience adaptation, hook-tension-climax-resolution |
-| **Theme Presets** | Google Cloud (default), Keynote Zen, Corporate Bold, Warm Storyteller, Clean Minimalist, Tech Neon, Earth & Organic, Playful Creative |
+| **Google Identity** | Google colors (blue, red, yellow, green), Inter/Google Sans fonts, gradient bar accents |
 | **Background Images** | Optional — user chooses whether to use full-bleed Unsplash images or clean theme-based design |
 
 ## Installation
@@ -83,8 +82,8 @@ The one takeaway should be: "Privacy is a competitive advantage, not a cost."
 ### Clean design (no background images)
 
 ```
-Generate slides about cloud-native architecture using the Google Cloud theme,
-no background images. Professional mood, around 8 slides.
+Generate slides about cloud-native architecture, no background images.
+Professional mood, around 8 slides.
 ```
 
 ### With background images
@@ -100,16 +99,9 @@ images, calm mood, and white text on dark backgrounds. Around 8 slides.
 Make a quick Zen presentation about why Kubernetes matters. You decide the look and feel.
 ```
 
-### Standalone deck for sharing
+## Google Identity Theme
 
-```
-Create a presentation about our Q3 roadmap that will be shared as a PDF,
-not presented live. It needs to be self-explanatory.
-```
-
-## Custom Theme: Google Cloud
-
-The skill includes a custom Marp CSS theme (`gcloud-theme.css`) styled after the Google Cloud visual identity. Features:
+The skill includes a custom Marp CSS theme (`gcloud-theme.css`) styled after the Google identity. Features:
 
 - **Inter / Google Sans** font family
 - **Google color palette** (blue, red, yellow, green)
@@ -127,25 +119,14 @@ The skill includes a custom Marp CSS theme (`gcloud-theme.css`) styled after the
 ### Using with Marp CLI
 
 ```bash
-marp slides.md --html --theme ./gcloud-theme.css
-marp slides.md --pdf --theme ./gcloud-theme.css
-```
+# Render to self-contained HTML
+npx @marp-team/marp-cli@latest slides.md --html --theme ./gcloud-theme.css -o slides.html
 
-## PowerPoint Output
+# Export to PowerPoint
+npx @marp-team/marp-cli@latest slides.md --theme ./gcloud-theme.css --pptx -o slides.pptx
 
-The skill automatically generates a `.pptx` file alongside the MARP Markdown. The pipeline:
-
-1. Each MARP slide is converted to a standalone HTML file (`slides/slide-NN.html`)
-2. The `html2pptx` library renders each HTML file and converts it to a PowerPoint slide
-3. A `generate-pptx.js` script is saved so you can regenerate the PowerPoint after editing
-
-**Requirements for PowerPoint generation** (must be globally installed):
-- `pptxgenjs`
-- `playwright`
-- `sharp`
-
-```bash
-npm install -g pptxgenjs playwright sharp
+# Export to PDF
+npx @marp-team/marp-cli@latest slides.md --pdf --theme ./gcloud-theme.css -o slides.pdf
 ```
 
 ## Included References
@@ -154,13 +135,12 @@ npm install -g pptxgenjs playwright sharp
 |------|-------------|
 | **marp-syntax-guide.md** | Complete MARP Markdown syntax reference — frontmatter, background images, filters, themes, custom themes, export commands |
 | **zen-design-principles.md** | Presentation Zen philosophy — restraint, naturalness, emptiness, visual metaphor guide, story arc structure |
-| **visual-themes.md** | Eight pre-defined visual theme presets including Google Cloud default |
-| **html2pptx-guide.md** | HTML-to-PowerPoint conversion rules — layout dimensions, supported elements, critical text rules, shape styling, and PptxGenJS API reference |
+| **visual-themes.md** | Visual theme presets and slide type class reference |
 
 ## Included Assets
 
 | File | Description |
 |------|-------------|
-| **gcloud-theme.css** | Custom Marp CSS theme with Google Cloud styling and slide type classes |
+| **gcloud-theme.css** | Custom Marp CSS theme with Google identity styling and slide type classes |
 | **deck-template.md** | Starter template using the gcloud theme (clean design, no images) |
 | **deck-template-images.md** | Starter template with full-bleed Unsplash background images |

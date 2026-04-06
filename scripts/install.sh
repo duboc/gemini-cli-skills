@@ -33,7 +33,6 @@ Available skills:
   clarity-presenter         MARP decks with SCQA narrative + assertion-evidence design
   developer-growth-analysis Analyze Gemini CLI session history for growth patterns
   google-ads-funnel         Funnel-as-Code workflows for Google Ads
-  marp-to-slides            Convert MARP Markdown to Google Slides
   spring-boot-upgrader      Migrate Spring Boot apps to 4.0 with phased upgrade plans
   using-git-worktrees       Create isolated git worktrees with safety checks
   webapp-testing            Test local web apps with Playwright

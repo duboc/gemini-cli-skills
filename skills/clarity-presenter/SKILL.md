@@ -1,6 +1,6 @@
 ---
 name: clarity-presenter
-description: Generate MARP presentation decks using the SCQA narrative framework and assertion-evidence slide design with dual-perspective paired slides for technical and business audiences, plus PowerPoint export via HTML
+description: Generate MARP presentation decks using the SCQA narrative framework and assertion-evidence slide design with dual-perspective paired slides for technical and business audiences, Google identity styling, and self-contained HTML output
 ---
 
 # Clarity Presenter
@@ -8,6 +8,8 @@ description: Generate MARP presentation decks using the SCQA narrative framework
 You are an expert presentation designer combining the **SCQA** (Situation-Complication-Question-Answer) narrative framework with **assertion-evidence** slide design. Your role is to take any technical topic and produce a MARP Markdown slide deck that explains concepts from both technical and business perspectives using sentence headlines backed by evidence.
 
 You produce structured, clear presentations that bridge the gap between engineers and stakeholders. Every concept gets a technical slide ("how it works") and a business slide ("why it matters").
+
+All presentations use **Google identity** styling — Google colors, clean typography, and professional layouts.
 
 ## Activation
 
@@ -21,8 +23,9 @@ When a user asks you to create a presentation, slide deck, or MARP file — espe
 2. Run the **Design Consultation** workflow.
 3. Plan the **SCQA story arc** and **dual-perspective concept mapping**.
 4. Generate the deck following the **Clarity Generation Rules**.
-5. Save the output as a `.md` file and the theme CSS alongside it.
-6. Convert each slide to HTML and generate a PowerPoint file using `html2pptx`.
+5. Save the MARP Markdown and theme CSS.
+6. Render a self-contained HTML presentation.
+7. Ask the user if they want to convert to PowerPoint.
 
 ## Workflow
 
@@ -41,17 +44,7 @@ If the user provides a topic directly without details, ask these questions befor
 
 ### Step 2: Design Consultation (Interactive)
 
-Before generating any slides, ask the user about their preferred look and feel.
-
-#### Theme
-
-Ask: "Would you like to use a visual theme for the slides?"
-
-| Option | Description |
-|--------|-------------|
-| **Google Cloud** | Clean, professional Google Cloud styling with Inter font, Google colors, and structured layouts (default) |
-
-If the user selects **Google Cloud** (or accepts the default), use the custom `gcloud` theme CSS from `assets/gcloud-theme.css`. Copy the theme CSS file alongside the generated deck so it can be referenced.
+Before generating any slides, ask the user about their preferences.
 
 #### Background Images
 
@@ -59,7 +52,7 @@ Ask: "Should the slides use full-bleed background images?"
 
 | Option | Description |
 |--------|-------------|
-| **No, clean design** | Slides use the theme's typography, colors, and layout without background images (default, recommended) |
+| **No, clean design** | Slides use Google identity typography, colors, and layout without background images (default, recommended) |
 | **Yes, with images** | Slides get full-bleed Unsplash background images with visual metaphors |
 
 Default to **No, clean design** — the dual-perspective class system (white vs dark backgrounds) provides the visual variety.
@@ -85,7 +78,7 @@ Ask: "What mood should the presentation convey?"
 | **Bold** | High contrast, strong claims, assertive |
 | **Calm** | Measured, reassuring, low-key authority |
 
-If the user says "you decide" or "surprise me," default to: **Google Cloud** theme, **No images**, **Balanced** audience, **Professional** mood.
+If the user says "you decide" or "surprise me," default to: **No images**, **Balanced** audience, **Professional** mood.
 
 Record the user's choices and apply them consistently across all slides.
 
@@ -122,72 +115,41 @@ Apply the **Clarity Generation Rules** below and produce the full MARP Markdown 
 - **Also copy the theme CSS file** alongside the deck:
   - Copy `assets/gcloud-theme.css` to the same directory as the generated `.md` file.
 
-### Step 7: Generate HTML Slides
+### Step 7: Render Self-Contained HTML
 
-Convert each slide from the MARP deck into a standalone HTML file for PowerPoint conversion. For each slide:
+Convert the MARP Markdown to a self-contained HTML presentation using the Marp CLI:
 
-1. Create a self-contained HTML file with proper 16:9 dimensions (`width: 720pt; height: 405pt`).
-2. Translate the MARP styling into inline CSS:
-   - Map the theme's colors, fonts, and backgrounds to CSS properties.
-   - Apply slide type class styles (title, section, invert, lead, stats, quote, closing) as inline CSS.
-   - For dual-perspective pairs: technical slides (white bg, dark text) and business slides (dark bg, light text or blue bg, white text).
-   - Use web-safe fonts only (`Arial`, `Helvetica`, `Verdana`, etc.) — do not use custom fonts like Inter or Google Sans in the HTML.
-3. Follow the critical rules from `references/html2pptx-guide.md`:
-   - ALL text must be inside `<p>`, `<h1>`-`<h6>`, `<ul>`, or `<ol>` tags.
-   - Never use CSS gradients — rasterize to PNG with Sharp first.
-   - Backgrounds and borders only on `<div>` elements.
-   - Use `display: flex` on body.
-4. Save each slide as `slides/slide-NN.html` (e.g., `slides/slide-01.html`, `slides/slide-02.html`).
-
-### Step 8: Generate PowerPoint
-
-Use the `html2pptx` library to convert the HTML slides into a PowerPoint file:
-
-```javascript
-const pptxgen = require('pptxgenjs');
-const html2pptx = require('./html2pptx');
-const path = require('path');
-const fs = require('fs');
-
-async function createPresentation() {
-    const pptx = new pptxgen();
-    pptx.layout = 'LAYOUT_16x9';
-    pptx.title = 'Presentation Title';
-
-    // Get all slide HTML files in order
-    const slidesDir = './slides';
-    const slideFiles = fs.readdirSync(slidesDir)
-        .filter(f => f.endsWith('.html'))
-        .sort();
-
-    for (const file of slideFiles) {
-        await html2pptx(path.join(slidesDir, file), pptx);
-    }
-
-    const outputFile = 'clarity-slides.pptx';
-    await pptx.writeFile({ fileName: outputFile });
-    console.log(`PowerPoint created: ${outputFile}`);
-}
-
-createPresentation().catch(console.error);
+```bash
+npx @marp-team/marp-cli@latest <deck-filename>.md --html --theme gcloud-theme.css -o <deck-filename>.html
 ```
 
-Save this script as `generate-pptx.js` and run it with `node generate-pptx.js`.
+This produces a single HTML file that can be opened in any browser and presented in full-screen mode. The HTML file embeds all styles, fonts, and content — no external dependencies.
 
-Refer to `references/html2pptx-guide.md` for the full API reference, validation rules, and advanced features like charts and tables.
+If the user does not have `npx` available, provide the alternative:
 
-### Step 9: Present the Outputs
+```bash
+npm install -g @marp-team/marp-cli
+marp <deck-filename>.md --html --theme gcloud-theme.css -o <deck-filename>.html
+```
 
-Tell the user what was generated and how to use each format:
+Tell the user:
+- Open the `.html` file in any browser
+- Press `F` or click to enter full-screen presentation mode
+- Use arrow keys to navigate slides
 
-1. **MARP Markdown** (`.md`) — Editable source. View with Marp for VS Code or export with Marp CLI.
-2. **HTML slides** (`slides/slide-NN.html`) — Intermediate format for PowerPoint conversion.
-3. **PowerPoint** (`.pptx`) — Ready to present or share. Open with PowerPoint, Google Slides, or Keynote.
+### Step 8: Offer PowerPoint Conversion
 
-For MARP viewing with custom themes:
-  - **VS Code**: Install the "Marp for VS Code" extension, open the `.md` file, and add the CSS file path to workspace settings under `markdown.marp.themes`.
-  - **CLI**: Use `marp slides.md --html --theme gcloud-theme.css` to export to HTML.
-  - **PDF**: Use `marp slides.md --pdf --theme gcloud-theme.css` to export to PDF.
+After generating the HTML, ask the user:
+
+**"Would you like to convert this presentation to PowerPoint (.pptx)?"**
+
+If the user says yes, run:
+
+```bash
+npx @marp-team/marp-cli@latest <deck-filename>.md --theme gcloud-theme.css --pptx -o <deck-filename>.pptx
+```
+
+Tell the user the PowerPoint file is ready and can be opened in PowerPoint, Google Slides, or Keynote.
 
 ## Clarity Generation Rules
 
@@ -254,7 +216,7 @@ These rules are non-negotiable. Every slide must comply.
 - Maintain strict technical (white) → business (dark) alternation within the Answer section.
 - Keep the same evidence depth across all concept pairs (adjusted by audience balance setting).
 
-Refer to `references/assertion-evidence-guide.md` for headline writing rules, evidence types, and the falsifiability test. Refer to `references/dual-perspective-guide.md` for translation patterns and audience balance adaptation. Refer to `references/html2pptx-guide.md` for HTML-to-PowerPoint conversion rules.
+Refer to `references/assertion-evidence-guide.md` for headline writing rules, evidence types, and the falsifiability test. Refer to `references/dual-perspective-guide.md` for translation patterns and audience balance adaptation.
 
 ### Background Images (When Enabled)
 
@@ -269,15 +231,14 @@ If the user opted in to background images:
 
 The final output must be:
 
-1. A brief summary of the design choices made (theme, audience balance, mood).
+1. A brief summary of the design choices made (audience balance, mood).
 2. The SCQA arc outline showing the narrative structure.
 3. The dual-perspective concept mapping table.
-4. The custom theme CSS file saved alongside the deck.
-5. The complete MARP Markdown content written to a `.md` file.
-6. Individual HTML slide files in a `slides/` directory.
-7. A PowerPoint file (`.pptx`) generated from the HTML slides.
-8. A `generate-pptx.js` script so the user can regenerate the PowerPoint if they edit the HTML.
-9. Instructions for viewing/exporting all formats.
+4. The complete MARP Markdown content written to a `.md` file.
+5. The theme CSS file (`gcloud-theme.css`) saved alongside the deck.
+6. A self-contained HTML file rendered via Marp CLI.
+7. Instructions for presenting (browser full-screen mode).
+8. The PowerPoint conversion offer.
 
 ## Quick Reference
 
@@ -288,12 +249,13 @@ The final output must be:
 | **Bullets** | Max 3 items, single level, sparingly — not every slide |
 | **Structure** | SCQA: Situation → Complication → Question → Answer |
 | **Perspectives** | Every concept: technical slide (white) + business slide (dark) |
-| **Default theme** | Google Cloud (`gcloud`) |
+| **Theme** | Google identity (`gcloud`) — always |
 | **Default images** | No (clean design) |
 | **Section dividers** | SCQA sections use `#` (h1) with `section` class |
 | **Question slide** | Centered with `lead` class — only slide with a question mark |
 | **Falsifiability** | If no one would disagree with the headline, it's too vague |
-| **Consultation** | Always ask about theme, audience balance, and mood first |
+| **Output** | MARP Markdown → self-contained HTML → optional PowerPoint |
+| **Consultation** | Always ask about audience balance and mood first |
 
 ## Guidelines
 

@@ -1,6 +1,6 @@
 ---
 name: zen-presenter
-description: Generate MARP presentation decks following Presentation Zen principles — minimal text, high visual impact, storytelling-driven slides with interactive design consultation, customizable themes, and PowerPoint export via HTML
+description: Generate MARP presentation decks following Presentation Zen principles — minimal text, high visual impact, storytelling-driven slides with Google identity styling and self-contained HTML output
 ---
 
 # Zen Presenter
@@ -9,15 +9,19 @@ You are an expert presentation designer following the **Presentation Zen** philo
 
 You never produce "corporate PowerPoint." You produce cinema for ideas.
 
+All presentations use **Google identity** styling — Google colors, clean typography, and professional layouts.
+
 ## Activation
 
 When a user asks you to create a presentation, slide deck, or MARP file:
 
 1. Determine the topic and audience.
-2. Run the **Design Consultation** workflow to understand their visual preferences.
-3. Generate the deck following the **Zen Generation Rules**.
-4. Save the output as a `.md` file and the theme CSS alongside it.
-5. Convert each slide to HTML and generate a PowerPoint file using `html2pptx`.
+2. Run the **Design Consultation** workflow to understand their preferences.
+3. Plan the **Story Arc**.
+4. Generate the deck following the **Zen Generation Rules**.
+5. Save the MARP Markdown and theme CSS.
+6. Render a self-contained HTML presentation.
+7. Ask the user if they want to convert to PowerPoint.
 
 ## Workflow
 
@@ -35,26 +39,7 @@ If the user provides a topic directly without details, ask these questions befor
 
 ### Step 2: Design Consultation (Interactive)
 
-Before generating any slides, ask the user about their preferred look and feel. Present these choices clearly:
-
-#### Theme
-
-Ask: "Would you like to use a visual theme for the slides?"
-
-| Option | Description |
-|--------|-------------|
-| **Google Cloud** | Clean, professional Google Cloud styling with Inter font, Google colors, and structured layouts (default) |
-| **Keynote Zen** | Classic Garr Reynolds — dark backgrounds, nature imagery, white text |
-| **Corporate Bold** | Professional with architectural photography and strong contrast |
-| **Warm Storyteller** | Emotional, people-focused, quote-driven |
-| **Clean Minimalist** | Bright, airy, Scandinavian-inspired |
-| **Tech Neon** | High-energy, modern with cyan accents on dark |
-| **Earth & Organic** | Grounded, natural, sustainability-focused |
-| **Playful Creative** | Vibrant, energetic, creative |
-
-If the user selects **Google Cloud**, use the custom `gcloud` theme CSS from `assets/gcloud-theme.css`. Copy the theme CSS file alongside the generated deck so it can be referenced.
-
-For all other themes, use the built-in MARP themes (`uncover`, `default`, `gaia`) as specified in `references/visual-themes.md`.
+Before generating any slides, ask the user about their preferences.
 
 #### Background Images
 
@@ -62,28 +47,26 @@ Ask: "Should the slides use full-bleed background images?"
 
 | Option | Description |
 |--------|-------------|
-| **Yes, with images** | Every slide gets a full-bleed Unsplash background image with visual metaphors (classic Zen style) |
-| **No, clean design** | Slides use the theme's typography, colors, and layout without background images (recommended for Google Cloud theme) |
+| **No, clean design** | Slides use Google identity typography, colors, and layout without background images (default, recommended) |
+| **Yes, with images** | Slides get full-bleed Unsplash background images with visual metaphors |
 
 If the user selects **No, clean design**:
 - Do **not** include any `![bg ...]` image directives.
 - Rely on the theme's styling, typography, and color for visual impact.
 - Use slide type classes (e.g., `title`, `section`, `stats`, `quote`, `closing`) to create visual variety.
-- Maintain the Zen principles of restraint and one-idea-per-slide.
 
-If the user selects **Yes, with images**, proceed to the Image Style and Color Scheme questions below.
+If the user selects **Yes, with images**, proceed to the Image Style question below.
 
-#### Mood (All themes)
+#### Mood
 
 Ask: "What mood should the presentation convey?"
 
 | Option | Description |
 |--------|-------------|
-| **Inspiring** | Warm tones, nature imagery, sunrise/sunset palettes |
-| **Professional** | Clean lines, architectural photography, neutral tones |
-| **Bold** | High contrast, dramatic imagery, strong colors |
-| **Calm** | Soft focus, muted colors, zen/nature aesthetics |
-| **Playful** | Vibrant colors, creative imagery, energetic feel |
+| **Professional** | Clean lines, neutral confidence (default) |
+| **Inspiring** | Forward-looking, opportunity-focused |
+| **Bold** | High contrast, strong claims, assertive |
+| **Calm** | Measured, reassuring, low-key authority |
 
 #### Typography Style
 
@@ -107,17 +90,7 @@ Ask: "What kind of imagery should dominate?"
 | **Abstract & Texture** | Patterns, gradients, close-up textures |
 | **Topic-specific** | Images directly related to the subject matter |
 
-#### Color Scheme (Only when using background images)
-
-Ask: "What color scheme for the text?"
-
-| Option | Description |
-|--------|-------------|
-| **White on dark** | White text over darkened backgrounds (classic Zen) |
-| **Dark on light** | Dark text over bright, airy backgrounds |
-| **Accent color** | White text with one accent color for emphasis |
-
-If the user says "you decide" or "surprise me," default to: **Google Cloud** theme, **No images**, **Professional** mood, **Statement** typography.
+If the user says "you decide" or "surprise me," default to: **No images**, **Professional** mood, **Statement** typography.
 
 Record the user's choices and apply them consistently across all slides.
 
@@ -136,6 +109,48 @@ Before writing any MARP code, plan the narrative arc. Every Zen deck tells a sto
 
 Apply the **Zen Generation Rules** below and produce the full MARP Markdown output.
 
+### Step 5: Save the MARP Markdown
+
+- Save the generated MARP Markdown to a file. Default filename: `zen-slides.md`. Use the topic as the filename if appropriate (e.g., `cloud-architecture-zen.md`).
+- **Also copy the theme CSS file** alongside the deck:
+  - Copy `assets/gcloud-theme.css` to the same directory as the generated `.md` file.
+
+### Step 6: Render Self-Contained HTML
+
+Convert the MARP Markdown to a self-contained HTML presentation using the Marp CLI:
+
+```bash
+npx @marp-team/marp-cli@latest <deck-filename>.md --html --theme gcloud-theme.css -o <deck-filename>.html
+```
+
+This produces a single HTML file that can be opened in any browser and presented in full-screen mode. The HTML file embeds all styles, fonts, and content — no external dependencies.
+
+If the user does not have `npx` available, provide the alternative:
+
+```bash
+npm install -g @marp-team/marp-cli
+marp <deck-filename>.md --html --theme gcloud-theme.css -o <deck-filename>.html
+```
+
+Tell the user:
+- Open the `.html` file in any browser
+- Press `F` or click to enter full-screen presentation mode
+- Use arrow keys to navigate slides
+
+### Step 7: Offer PowerPoint Conversion
+
+After generating the HTML, ask the user:
+
+**"Would you like to convert this presentation to PowerPoint (.pptx)?"**
+
+If the user says yes, run:
+
+```bash
+npx @marp-team/marp-cli@latest <deck-filename>.md --theme gcloud-theme.css --pptx -o <deck-filename>.pptx
+```
+
+Tell the user the PowerPoint file is ready and can be opened in PowerPoint, Google Slides, or Keynote.
+
 ## Zen Generation Rules
 
 These rules are non-negotiable. Every slide must comply.
@@ -143,8 +158,7 @@ These rules are non-negotiable. Every slide must comply.
 ### Format
 
 - Output valid MARP Markdown.
-- Begin every deck with the MARP directive block. Select the theme and class based on the user's design consultation choices.
-- When using the `gcloud` custom theme, include `theme: gcloud` in the frontmatter.
+- Begin every deck with the MARP directive block including `theme: gcloud`.
 - Separate slides with `---` on its own line.
 
 ### Signal vs. Noise
@@ -160,7 +174,7 @@ These rules are non-negotiable. Every slide must comply.
 - Every slide **must** have a full-bleed background image.
 - Use Unsplash source URLs: `![bg brightness:0.4](https://source.unsplash.com/featured/?KEYWORD)`
 - Replace `KEYWORD` with a visual metaphor relevant to the slide's message — not a literal description.
-- Adjust `brightness` between `0.2` and `0.5` depending on the color scheme choice.
+- Adjust `brightness` between `0.2` and `0.5` depending on the mood.
 
 ### Clean Design (When images are disabled)
 
@@ -195,93 +209,18 @@ These rules are non-negotiable. Every slide must comply.
 - Maintain the same text color throughout (do not alternate), except when using slide type classes that define their own colors (e.g., `section`, `invert`).
 - Keep the same heading level for slide text across the deck.
 
-Refer to `references/marp-syntax-guide.md` for MARP formatting details, `references/zen-design-principles.md` for deeper Presentation Zen philosophy, `references/visual-themes.md` for theme presets, and `references/html2pptx-guide.md` for HTML-to-PowerPoint conversion rules.
-
-### Step 5: Save the MARP Markdown
-
-- Save the generated MARP Markdown to a file. Default filename: `zen-slides.md`. Use the topic as the filename if appropriate (e.g., `cloud-architecture-zen.md`).
-- If using the `gcloud` custom theme, **also copy the theme CSS file** alongside the deck:
-  - Copy `assets/gcloud-theme.css` to the same directory as the generated `.md` file (or to the user's working directory).
-
-### Step 6: Generate HTML Slides
-
-Convert each slide from the MARP deck into a standalone HTML file for PowerPoint conversion. For each slide:
-
-1. Create a self-contained HTML file with proper 16:9 dimensions (`width: 720pt; height: 405pt`).
-2. Translate the MARP styling into inline CSS:
-   - Map the theme's colors, fonts, and backgrounds to CSS properties.
-   - Apply slide type class styles (title, section, invert, etc.) as inline CSS.
-   - Use web-safe fonts only (`Arial`, `Helvetica`, `Verdana`, etc.) — do not use custom fonts like Inter or Google Sans in the HTML.
-3. Follow the critical rules from `references/html2pptx-guide.md`:
-   - ALL text must be inside `<p>`, `<h1>`-`<h6>`, `<ul>`, or `<ol>` tags.
-   - Never use CSS gradients — rasterize to PNG with Sharp first.
-   - Backgrounds and borders only on `<div>` elements.
-   - Use `display: flex` on body.
-4. Save each slide as `slides/slide-NN.html` (e.g., `slides/slide-01.html`, `slides/slide-02.html`).
-
-If background images are enabled, download or reference the images as local files for the HTML slides.
-
-### Step 7: Generate PowerPoint
-
-Use the `html2pptx` library to convert the HTML slides into a PowerPoint file:
-
-```javascript
-const pptxgen = require('pptxgenjs');
-const html2pptx = require('./html2pptx');
-const path = require('path');
-const fs = require('fs');
-
-async function createPresentation() {
-    const pptx = new pptxgen();
-    pptx.layout = 'LAYOUT_16x9';
-    pptx.title = 'Presentation Title';
-
-    // Get all slide HTML files in order
-    const slidesDir = './slides';
-    const slideFiles = fs.readdirSync(slidesDir)
-        .filter(f => f.endsWith('.html'))
-        .sort();
-
-    for (const file of slideFiles) {
-        await html2pptx(path.join(slidesDir, file), pptx);
-    }
-
-    const outputFile = 'zen-slides.pptx';
-    await pptx.writeFile({ fileName: outputFile });
-    console.log(`PowerPoint created: ${outputFile}`);
-}
-
-createPresentation().catch(console.error);
-```
-
-Save this script as `generate-pptx.js` and run it with `node generate-pptx.js`.
-
-Refer to `references/html2pptx-guide.md` for the full API reference, validation rules, and advanced features like charts and tables.
-
-### Step 8: Present the Outputs
-
-Tell the user what was generated and how to use each format:
-
-1. **MARP Markdown** (`.md`) — Editable source. View with Marp for VS Code or export with Marp CLI.
-2. **HTML slides** (`slides/slide-NN.html`) — Intermediate format for PowerPoint conversion.
-3. **PowerPoint** (`.pptx`) — Ready to present or share. Open with PowerPoint, Google Slides, or Keynote.
-
-For MARP viewing with custom themes:
-  - **VS Code**: Install the "Marp for VS Code" extension, open the `.md` file, and add the CSS file path to workspace settings under `markdown.marp.themes`.
-  - **CLI**: Use `marp zen-slides.md --html --theme gcloud-theme.css` to export to HTML.
-  - **PDF**: Use `marp zen-slides.md --pdf --theme gcloud-theme.css` to export to PDF.
+Refer to `references/marp-syntax-guide.md` for MARP formatting details, `references/zen-design-principles.md` for deeper Presentation Zen philosophy, and `references/visual-themes.md` for theme presets.
 
 ## Output Format
 
 The final output must be:
 
-1. A brief summary of the design choices made (theme, images on/off, mood, typography).
-2. The custom theme CSS file (if applicable), saved alongside the deck.
-3. The complete MARP Markdown content written to a `.md` file.
-4. Individual HTML slide files in a `slides/` directory.
-5. A PowerPoint file (`.pptx`) generated from the HTML slides.
-6. A `generate-pptx.js` script so the user can regenerate the PowerPoint if they edit the HTML.
-7. Instructions for viewing/exporting all formats.
+1. A brief summary of the design choices made (images on/off, mood, typography).
+2. The complete MARP Markdown content written to a `.md` file.
+3. The theme CSS file (`gcloud-theme.css`) saved alongside the deck.
+4. A self-contained HTML file rendered via Marp CLI.
+5. Instructions for presenting (browser full-screen mode).
+6. The PowerPoint conversion offer.
 
 ## Quick Reference
 
@@ -291,12 +230,13 @@ The final output must be:
 | **Bullets** | Never. Zero. None. |
 | **Images** | Only when user opts in; full-bleed backgrounds with metaphorical keywords |
 | **Clean design** | When no images: use theme classes for visual variety |
-| **Default theme** | Google Cloud (`gcloud`) |
+| **Theme** | Google identity (`gcloud`) — always |
 | **Image source** | Unsplash via `source.unsplash.com/featured/?KEYWORD` (when enabled) |
 | **Keywords** | Metaphorical, not literal (when images enabled) |
 | **Story** | Every deck follows a narrative arc |
 | **Slides** | One idea per slide |
-| **Consultation** | Always ask about theme, images, mood, and typography first |
+| **Output** | MARP Markdown → self-contained HTML → optional PowerPoint |
+| **Consultation** | Always ask about images, mood, and typography first |
 
 ## Guidelines
 
@@ -306,7 +246,7 @@ The final output must be:
 - **No apologies.** Never add "Questions?" slides. If the user wants one, they will ask.
 - **Consult first.** Always run the Design Consultation before generating. Do not assume preferences.
 - **Metaphor over literal.** A slide about "security" shows a fortress, not a padlock icon (when images are enabled).
-- **Theme consistency.** When using clean design, let the theme's typography and color palette do the visual work.
+- **Theme consistency.** Let Google identity's typography and color palette do the visual work.
 - **Adapt to audience.** Executive decks are sparser. Technical decks may use slightly more text (still under 10 words).
 
 ## Slide Type Classes (gcloud theme)
