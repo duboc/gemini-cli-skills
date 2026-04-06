@@ -271,3 +271,17 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on creating and submitting
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+## Architectural Patterns
+
+### Multi-Turn Deep Analysis Mandate
+All modernization and migration orchestrators (e.g., `app-modernization-orchestrator`, `sybase-spanner-migration-orchestrator`) and their sub-skills enforce a **Multi-Turn Deep Analysis Mandate**. 
+
+When analyzing massive legacy codebases (thousands of files, complex stored procedures, or dense XML configurations), LLMs can hit context exhaustion or turn limits if they attempt to read, analyze, and generate complex UI dashboards in a single pass.
+
+To prevent this, the skills are strictly instructed to:
+1. **Batch Processing:** Process large numbers of components in batches across multiple turns.
+2. **Analysis First:** Generate the deep analytical Markdown reports first.
+3. **Visualization Later:** Only invoke the `visual-explainer` skill to generate HTML dashboards in a *separate, dedicated turn* after the Markdown analysis is fully complete and saved to disk.
+
+This ensures that the agents prioritize depth, accuracy, and thoroughness over speed, resulting in high-fidelity migration assessments.
