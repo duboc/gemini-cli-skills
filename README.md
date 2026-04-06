@@ -93,9 +93,9 @@ Synthesis:           @migration-orchestrator
 
 ### Settings Configuration
 
-Because these modernization skills enforce a **Multi-Turn Deep Analysis Mandate**, they require significantly more turns and time than standard Gemini CLI tasks. The default turn limits will likely cause the agents to halt prematurely.
+Because these modernization skills enforce a **Multi-Turn Deep Analysis Mandate**, they require significantly more turns, time, and output tokens than standard Gemini CLI tasks. The default limits will likely cause the agents to halt prematurely or truncate large reports.
 
-You **must** update your `~/.gemini/settings.json` to increase the `maxTurns` and `maxTimeMinutes` for the orchestrators and, crucially, the `generalist` subagent (which the orchestrators delegate to for deep analysis).
+You **must** update your `~/.gemini/settings.json` to increase the `maxTurns`, `maxTimeMinutes`, and `maxOutputTokens` for the orchestrators and, crucially, the `generalist` subagent (which the orchestrators delegate to for deep analysis).
 
 Here is the recommended configuration to add to your `~/.gemini/settings.json`:
 
@@ -107,28 +107,32 @@ Here is the recommended configuration to add to your `~/.gemini/settings.json`:
         "enabled": true,
         "runConfig": {
           "maxTurns": 100,
-          "maxTimeMinutes": 45
+          "maxTimeMinutes": 45,
+          "maxOutputTokens": 8192
         }
       },
       "codebase_investigator": {
         "enabled": true,
         "runConfig": {
           "maxTurns": 100,
-          "maxTimeMinutes": 45
+          "maxTimeMinutes": 45,
+          "maxOutputTokens": 8192
         }
       },
       "app-modernization-orchestrator": {
         "enabled": true,
         "runConfig": {
           "maxTurns": 150,
-          "maxTimeMinutes": 60
+          "maxTimeMinutes": 60,
+          "maxOutputTokens": 8192
         }
       },
       "sybase-spanner-migration-orchestrator": {
         "enabled": true,
         "runConfig": {
           "maxTurns": 150,
-          "maxTimeMinutes": 60
+          "maxTimeMinutes": 60,
+          "maxOutputTokens": 8192
         }
       }
     }
