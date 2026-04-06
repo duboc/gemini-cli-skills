@@ -93,21 +93,44 @@ Synthesis:           @migration-orchestrator
 
 ### Settings Configuration
 
-The agents include a `settings.json` with optimized runtime configurations (max turns, timeouts). The install script merges these automatically, or you can manually add to your `.gemini/settings.json`:
+Because these modernization skills enforce a **Multi-Turn Deep Analysis Mandate**, they require significantly more turns and time than standard Gemini CLI tasks. The default turn limits will likely cause the agents to halt prematurely.
+
+You **must** update your `~/.gemini/settings.json` to increase the `maxTurns` and `maxTimeMinutes` for the orchestrators and, crucially, the `generalist` subagent (which the orchestrators delegate to for deep analysis).
+
+Here is the recommended configuration to add to your `~/.gemini/settings.json`:
 
 ```json
 {
   "agents": {
     "overrides": {
-      "sybase-inventory": { "enabled": true, "runConfig": { "maxTurns": 50, "maxTimeMinutes": 20 } },
-      "dead-component": { "enabled": true, "runConfig": { "maxTurns": 30, "maxTimeMinutes": 15 } },
-      "data-flow": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 15 } },
-      "integration-catalog": { "enabled": true, "runConfig": { "maxTurns": 30, "maxTimeMinutes": 15 } },
-      "risk-assessment": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 20 } },
-      "spanner-schema": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 20 } },
-      "service-extraction": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 20 } },
-      "modernization": { "enabled": true, "runConfig": { "maxTurns": 40, "maxTimeMinutes": 15 } },
-      "migration-orchestrator": { "enabled": true, "runConfig": { "maxTurns": 50, "maxTimeMinutes": 30 } }
+      "generalist": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 100,
+          "maxTimeMinutes": 45
+        }
+      },
+      "codebase_investigator": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 100,
+          "maxTimeMinutes": 45
+        }
+      },
+      "app-modernization-orchestrator": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 150,
+          "maxTimeMinutes": 60
+        }
+      },
+      "sybase-spanner-migration-orchestrator": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 150,
+          "maxTimeMinutes": 60
+        }
+      }
     }
   }
 }
