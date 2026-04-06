@@ -29,6 +29,7 @@ A collection of reusable skills for [Gemini CLI](https://github.com/google-gemin
 | [system-design](skills/system-design/) | Design systems, services, and architectures with explicit trade-off analysis | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- system-design` |
 | [documentation](skills/documentation/) | Write and maintain technical documentation, READMEs, API docs, runbooks, and architecture docs | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- documentation` |
 | [visual-explainer](skills/visual-explainer/) | Generate beautiful, self-contained HTML pages that visually explain systems, code changes, plans, and data | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- visual-explainer` |
+| [html-to-pptx](skills/html-to-pptx/) | Convert MARP HTML slides into fully editable PowerPoint files with native text boxes, lists, tables, and embedded images | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- html-to-pptx` |
 
 ### Database Migration (Sybase to Cloud Spanner)
 

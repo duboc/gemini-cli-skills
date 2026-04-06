@@ -143,13 +143,14 @@ After generating the HTML, ask the user:
 
 **"Would you like to convert this presentation to PowerPoint (.pptx)?"**
 
-If the user says yes, run:
+Offer two options:
 
-```bash
-npx @marp-team/marp-cli@latest <deck-filename>.md --theme gcloud-theme.css --pptx -o <deck-filename>.pptx
-```
+1. **Quick export** (via Marp CLI) — fast but slides are rendered as images, not editable:
+   ```bash
+   npx @marp-team/marp-cli@latest <deck-filename>.md --theme gcloud-theme.css --pptx -o <deck-filename>.pptx
+   ```
 
-Tell the user the PowerPoint file is ready and can be opened in PowerPoint, Google Slides, or Keynote.
+2. **Fully editable export** (via `html-to-pptx` skill) — every text box, list, and table is a native PowerPoint element that can be edited. Recommend this option if the user needs to modify the slides in PowerPoint. Invoke the `html-to-pptx` skill with the generated HTML file.
 
 ## Zen Generation Rules
 

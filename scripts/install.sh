@@ -39,6 +39,7 @@ Available skills:
   writing-plans             Generate TDD implementation plans
   zen-presenter             MARP decks following Presentation Zen principles
   visual-explainer          Generate visual HTML pages for diagrams and data
+  html-to-pptx              Convert MARP HTML slides to editable PowerPoint
 EOF
 }
 
