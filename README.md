@@ -31,47 +31,6 @@ A collection of reusable skills for [Gemini CLI](https://github.com/google-gemin
 | [documentation](skills/documentation/) | Write and maintain technical documentation, READMEs, API docs, runbooks, and architecture docs | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- documentation` |
 | [visual-explainer](skills/visual-explainer/) | Generate beautiful, self-contained HTML pages that visually explain systems, code changes, plans, and data | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- visual-explainer` |
 
-### App Modernization
-
-Skills for assessing, mapping, and modernizing legacy enterprise applications across four phases.
-
-#### Phase 1: Component Inventory
-
-| Skill | Description | Install |
-|-------|-------------|---------|
-| [stored-proc-analyzer](skills/stored-proc-analyzer/) | Parse database stored procedures (PL/SQL, T-SQL), classify by complexity, and cross-reference with DB telemetry | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- stored-proc-analyzer` |
-| [esb-cataloger](skills/esb-cataloger/) | Ingest ESB configurations to produce a consumer/producer matrix by payload and protocol | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- esb-cataloger` |
-| [batch-app-scanner](skills/batch-app-scanner/) | Catalog EJB/Spring Batch jobs, map schedules, and flag outdated dependencies | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- batch-app-scanner` |
-| [monolith-sbom](skills/monolith-sbom/) | Build a software bill of materials flagging deprecated stacks and EOL components | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- monolith-sbom` |
-
-#### Phase 2: Dependency & Flow Mapping
-
-| Skill | Description | Install |
-|-------|-------------|---------|
-| [dependency-flow-mapper](skills/dependency-flow-mapper/) | Trace sync/async execution paths, detect shared databases, and build dependency graphs | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- dependency-flow-mapper` |
-| [esb-routing-extractor](skills/esb-routing-extractor/) | Deep-extract ESB routing logic separating transparent routing from embedded business rules | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- esb-routing-extractor` |
-
-#### Phase 3: Business & Risk Identification
-
-| Skill | Description | Install |
-|-------|-------------|---------|
-| [business-risk-assessor](skills/business-risk-assessor/) | Correlate transaction volumes with code complexity and churn to prioritize modernization targets | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- business-risk-assessor` |
-| [dead-code-detector](skills/dead-code-detector/) | Cross-reference static analysis with production execution data to flag zero-hit components | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- dead-code-detector` |
-
-#### Phase 4: Target Architecture
-
-| Skill | Description | Install |
-|-------|-------------|---------|
-| [esb-to-event-driven](skills/esb-to-event-driven/) | Design event-driven replacements for ESB integrations using Pub/Sub or Kafka | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- esb-to-event-driven` |
-| [batch-to-serverless](skills/batch-to-serverless/) | Draft Cloud Run, K8s CronJob, and serverless configs to replace legacy batch applications | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- batch-to-serverless` |
-| [storedproc-to-microservice](skills/storedproc-to-microservice/) | Extract stored procedure logic into microservices with OpenAPI specs and migration plans | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- storedproc-to-microservice` |
-
-#### Orchestration
-
-| Skill | Description | Install |
-|-------|-------------|---------|
-| [app-modernization-orchestrator](skills/app-modernization-orchestrator/) | Orchestrate the full modernization lifecycle across all 4 phases, coordinating 11 skills with state management and executive dashboards | `curl -fsSL https://raw.githubusercontent.com/duboc/gemini-cli-skills/main/scripts/install.sh \| bash -s -- app-modernization-orchestrator` |
-
 ### Database Migration (Sybase to Cloud Spanner)
 
 Sybase migration skills have moved to their own repository: [sybase-migration-toolkit](https://github.com/duboc/sybase-migration-toolkit)
@@ -119,17 +78,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on creating and submitting
 ## License
 
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
-
-## Architectural Patterns
-
-### Multi-Turn Deep Analysis Mandate
-Modernization orchestrators (e.g., `app-modernization-orchestrator`) and their sub-skills enforce a **Multi-Turn Deep Analysis Mandate**. 
-
-When analyzing massive legacy codebases (thousands of files, complex stored procedures, or dense XML configurations), LLMs can hit context exhaustion or turn limits if they attempt to read, analyze, and generate complex UI dashboards in a single pass.
-
-To prevent this, the skills are strictly instructed to:
-1. **Batch Processing:** Process large numbers of components in batches across multiple turns.
-2. **Analysis First:** Generate the deep analytical Markdown reports first.
-3. **Visualization Later:** Only invoke the `visual-explainer` skill to generate HTML dashboards in a *separate, dedicated turn* after the Markdown analysis is fully complete and saved to disk.
-
-This ensures that the agents prioritize depth, accuracy, and thoroughness over speed, resulting in high-fidelity migration assessments.

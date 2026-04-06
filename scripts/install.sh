@@ -40,28 +40,6 @@ Available skills:
   writing-plans             Generate TDD implementation plans
   zen-presenter             MARP decks following Presentation Zen principles
   visual-explainer          Generate visual HTML pages for diagrams and data
-
-  # App Modernization — Phase 1: Component Inventory
-  stored-proc-analyzer      Parse and classify database stored procedures
-  esb-cataloger             Catalog ESB integrations and consumer matrices
-  batch-app-scanner         Inventory Java batch jobs and flag outdated deps
-  monolith-sbom             Build SBOM for monoliths, flag EOL components
-
-  # App Modernization — Phase 2: Dependency & Flow Mapping
-  dependency-flow-mapper    Map sync/async flows and shared DB dependencies
-  esb-routing-extractor     Extract and classify ESB routing logic
-
-  # App Modernization — Phase 3: Business & Risk Identification
-  business-risk-assessor    Assess business risk and modernization priority
-  dead-code-detector        Identify zero-hit components for removal
-
-  # App Modernization — Phase 4: Target Architecture
-  esb-to-event-driven       Design event-driven ESB replacements
-  batch-to-serverless       Migrate batch jobs to Cloud Run / K8s CronJobs
-  storedproc-to-microservice Extract stored procs to microservices
-
-  # App Modernization — Orchestration
-  app-modernization-orchestrator  Orchestrate full modernization lifecycle
 EOF
 }
 
