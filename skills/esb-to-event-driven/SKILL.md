@@ -157,7 +157,7 @@ Produce:
 
 ## HTML Report Output
 
-After generating the architecture design, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the architecture design, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total routes to migrate, routes by migration pattern, estimated migration phases, event topics to create
 - **Architecture comparison** as a split-view: current ESB topology (Mermaid diagram) on the left, target event-driven topology on the right
@@ -170,6 +170,7 @@ After generating the architecture design, render the results as a self-contained
 Write the HTML file to `./diagrams/esb-to-event-driven.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - Prefer choreography over orchestration where possible (reduces central coordination)
 - Design for at-least-once delivery — consumers must be idempotent
 - Include schema evolution strategy from day one

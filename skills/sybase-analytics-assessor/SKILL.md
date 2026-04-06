@@ -449,7 +449,7 @@ The report follows this structure:
 
 ## HTML Report Output
 
-After generating the analytics assessment, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the analytics assessment, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total tables classified, OLTP count (Spanner), ANALYTICS count (BigQuery), HYBRID count (CDC), ARCHIVE count (Cloud Storage), total data volume by target
 - **Workload classification table** as an interactive HTML table with platform badges (OLTP=blue, ANALYTICS=purple, HYBRID=amber, ARCHIVE=gray), data volume, read/write ratio, and freshness requirement
@@ -462,6 +462,7 @@ After generating the analytics assessment, render the results as a self-containe
 Write the HTML file to `./diagrams/sybase-analytics-assessor-report.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 
 - ALWAYS classify Sybase IQ instances as ANALYTICS target (BigQuery), never attempt to migrate IQ to Spanner
 - Consider that mixed OLTP/analytics workloads on ASE are common in financial enterprises -- do not assume everything is OLTP

@@ -800,7 +800,7 @@ The report follows this structure:
 
 ## HTML Report Output
 
-After generating the extraction plan, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the extraction plan, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total procedures analyzed, P1/P2/P3/P4 counts, Cloud Run services to create, saga patterns designed, OpenAPI specs generated
 - **Extraction priority table** as an interactive HTML table with priority badges (P1=red critical, P2=orange blocker, P3=yellow transform, P4=green simple), bounded context grouping, complexity score, and daily execution count

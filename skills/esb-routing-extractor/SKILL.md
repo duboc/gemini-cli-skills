@@ -125,7 +125,7 @@ For each BUSINESS_RULE/ORCHESTRATE route:
 
 ## HTML Report Output
 
-After generating the routing analysis, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the routing analysis, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total routes analyzed, breakdown by category (PASS-THROUGH, TRANSFORM, ENRICH, ORCHESTRATE, BUSINESS_RULE), average complexity score
 - **Classified route inventory** as an interactive HTML table with category badges, complexity scores, and migration effort indicators
@@ -137,6 +137,7 @@ After generating the routing analysis, render the results as a self-contained HT
 Write the HTML file to `./diagrams/esb-routing-analysis.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - Preserve exact routing predicates in output — do not paraphrase XPath/JSONPath expressions
 - Flag routes with side effects (database writes, file creation, external notifications)
 - Note routes with error handling logic that contains business decisions

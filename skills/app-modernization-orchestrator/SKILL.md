@@ -30,6 +30,12 @@ When user asks to modernize an application end-to-end, run a full migration asse
 
 ## Workflow
 
+**CRITICAL: Multi-Turn Deep Analysis Mandate**
+To ensure exhaustive analysis and prevent shallow results, you MUST take your time and maximize the use of available turns. Do not rush.
+1. **Batch Processing:** If a phase involves analyzing many components (e.g., dozens of stored procedures or tables), instruct the subagents to process them in batches across multiple turns.
+2. **Analysis First, Visualization Later:** You MUST split the execution of every specialized skill. Run the skill to generate the Markdown report ONLY. Explicitly instruct the subagent: "Take your time, use multiple turns to read files deeply, and do NOT generate the HTML dashboard yet."
+3. **Visualization Step:** Only after the deep analysis is fully complete and saved to Markdown, invoke the `visual-explainer` skill in a *separate, dedicated turn* to generate the HTML dashboard.
+
 ### Step 0: Intake & Scoping
 
 Before running any phase, gather context about the application landscape:
@@ -251,7 +257,9 @@ Save the unified plan to `modernization-plan.md`.
 
 ### Step 6: Executive Dashboard (HTML)
 
-After producing the unified plan, render an executive dashboard as a self-contained HTML page using the `visual-explainer` skill. The dashboard should include:
+After producing the unified plan, render an executive dashboard as a self-contained HTML page using the `visual-explainer` skill. **CRITICAL:** To avoid context exhaustion and turn limits, you MUST generate the Markdown data first, and then invoke `visual-explainer` in a separate, dedicated turn. Do not attempt to analyze data and generate the HTML dashboard in the same turn.
+
+The dashboard should include:
 
 - **Hero section** with program name, scope summary, and overall health status (on-track, at-risk, blocked)
 - **KPI cards row**: total components, components migrated/remaining, dead code removed, estimated cost savings, timeline progress
@@ -265,6 +273,10 @@ After producing the unified plan, render an executive dashboard as a self-contai
 - **Risk register table** with severity indicators and mitigation status
 
 Write the HTML file to `./diagrams/modernization-dashboard.html` and open it in the browser.
+
+### Step 7: Master Navigation Hub
+
+After all phases and dashboards are complete, use the `visual-explainer` skill to generate a single `index.html` file in the `diagrams/` directory. This file should act as a master navigation hub, linking to all the individual HTML dashboards generated during the assessment (e.g., `modernization-dashboard.html`, `batch-inventory.html`, `esb-catalog.html`, `monolith-sbom.html`, etc.).
 
 ## State Management
 

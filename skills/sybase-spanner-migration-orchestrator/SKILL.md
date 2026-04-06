@@ -31,6 +31,12 @@ When user asks to migrate Sybase to Cloud Spanner end-to-end, run a full databas
 
 ## Workflow
 
+**CRITICAL: Multi-Turn Deep Analysis Mandate**
+To ensure exhaustive analysis and prevent shallow results, you MUST take your time and maximize the use of available turns. Do not rush.
+1. **Batch Processing:** If a phase involves analyzing many components (e.g., dozens of stored procedures or tables), instruct the subagents to process them in batches across multiple turns.
+2. **Analysis First, Visualization Later:** You MUST split the execution of every specialized skill. Run the skill to generate the Markdown report ONLY. Explicitly instruct the subagent: "Take your time, use multiple turns to read files deeply, and do NOT generate the HTML dashboard yet."
+3. **Visualization Step:** Only after the deep analysis is fully complete and saved to Markdown, invoke the `visual-explainer` skill in a *separate, dedicated turn* to generate the HTML dashboard.
+
 ### Step 0: Intake & Scoping
 
 Before running any phase, gather comprehensive context about the Sybase landscape and financial domain:
@@ -115,6 +121,12 @@ Run the applicable Phase 1 skills **in parallel** (they are independent):
 | `sybase-schema-profiler` | Always | Schema inventory, data type conversion matrix, index analysis, constraint catalog |
 | `sybase-replication-mapper` | Replication Server present | Replication topology, subscription catalog, route maps, latency analysis |
 | `sybase-integration-cataloger` | External integrations exist | Integration point catalog, Open Server mapping, CTLIB connection inventory |
+
+**Critical Instructions for Delegated Skills:**
+When delegating to `sybase-tsql-analyzer` and `sybase-schema-profiler`, you MUST explicitly instruct them to:
+1. **Handle Sybase Dialect Shorthands:** Search for both `CREATE PROCEDURE` and `CREATE PROC` syntax to ensure an accurate count.
+2. **Differentiate Temp Tables:** Distinguish between local (`#`) and global (`##`) temporary tables, as global temp tables imply cross-session state.
+3. **Verify DDL Presence:** Explicitly check if the repository contains the base schema DDL (permanent tables) or if it is strictly a code repository (Procs/Views only).
 
 **Phase Gate**: Before proceeding to Phase 2, verify:
 
@@ -343,6 +355,10 @@ After producing the unified plan, render an executive dashboard as a self-contai
 
 Write the HTML file to `./diagrams/sybase-migration-dashboard.html`.
 
+### Step 7: Master Navigation Hub
+
+After all phases and dashboards are complete, use the `visual-explainer` skill to generate a single `index.html` file in the `diagrams/` directory. This file should act as a master navigation hub, linking to all the individual HTML dashboards generated during the assessment (e.g., `sybase-migration-dashboard.html`, `stored-proc-inventory.html`, `schema-profiler.html`, etc.).
+
 ## State Management
 
 Track orchestration state in a `migration-state.json` file in the working directory:
@@ -357,7 +373,35 @@ Track orchestration state in a `migration-state.json` file in the working direct
     "iq_databases": [],
     "replication_server": false,
     "open_server_gateways": false,
-    "total_data_volume_gb": 0
+    "total_data_volume_gb": 0,
+    "detailed_inventory": {
+      "total_sql_files": 0,
+      "stored_procedures": {
+        "total": 0,
+        "active": 0,
+        "dead": 0,
+        "complexity": {
+          "simple": 0,
+          "medium": 0,
+          "complex": 0
+        },
+        "syntax_variants": {
+          "create_procedure": 0,
+          "create_proc": 0
+        }
+      },
+      "views": {
+        "total": 0,
+        "active": 0,
+        "dead": 0
+      },
+      "tables": {
+        "permanent": 0,
+        "temporary_local": 0,
+        "temporary_global": 0,
+        "note": ""
+      }
+    }
   },
   "financial_domain": {
     "trading_system": false,
@@ -508,6 +552,7 @@ When producing the final migration plan and phase summaries, follow this templat
 - Pre-migration: establish agreed cutover calendar with all business stakeholders
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 
 - **Delegate, don't duplicate.** You orchestrate — the specialized skills do the detailed Sybase analysis and Spanner design. Never replicate their logic.
 - **Phase gates matter.** Do not skip phase gates. Missing data in early phases cascades into data loss or compliance violations in later phases.
@@ -526,3 +571,4 @@ When producing the final migration plan and phase summaries, follow this templat
 - **Interleaved tables for performance.** Leverage Spanner interleaved tables for parent-child relationships that are frequently queried together (e.g., order-header/order-line).
 - **Money type precision.** Validate that Spanner NUMERIC handles all financial calculation precision requirements from Sybase money types.
 - **Test with production-scale data.** Spanner behavior differs at scale — always test with production-representative data volumes and query patterns.
+uction-representative data volumes and query patterns.

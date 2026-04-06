@@ -67,6 +67,7 @@ Flag coupling risks:
 ### Step 3: Shared Database Detection
 Scan across application boundaries for the "integration database" anti-pattern:
 - Parse connection strings, JNDI lookups, and ORM configurations across all applications
+- **CRITICAL:** To find exact table mutations, explicitly search for SQL mapping files (`*-sql.xml`, `*.hbm.xml`) and JPA `@Table` annotations. You MUST run shell commands like `grep -rnw -e "INSERT INTO" -e "UPDATE" -e "DELETE"` to map exact table mutations rather than guessing from imports.
 - Identify tables referenced by multiple applications
 - Classify access patterns:
   - READ_ONLY: Application only reads — lower risk
@@ -111,7 +112,7 @@ Generate comprehensive dependency analysis:
 
 ## HTML Report Output
 
-After generating the dependency analysis, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the dependency analysis, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total services mapped, synchronous vs asynchronous connections, shared database count, circular dependencies found
 - **Dependency graph** rendered as an interactive Mermaid diagram with SYNC/ASYNC edge labels, color-coded by coupling risk
@@ -123,6 +124,7 @@ After generating the dependency analysis, render the results as a self-contained
 Write the HTML file to `./diagrams/dependency-map.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - Distinguish compile-time vs runtime dependencies
 - Flag circular dependencies as highest priority to resolve
 - Note connection pool configurations and timeout settings

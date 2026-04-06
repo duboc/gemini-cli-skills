@@ -32,6 +32,7 @@ Build a comprehensive bill of materials:
 **Direct Dependencies:**
 - Parse all build files (pom.xml, build.gradle, package.json, requirements.txt, go.mod, Gemfile, *.csproj)
 - Extract: name, group/scope, declared version, license (if available)
+- **CRITICAL:** Do not rely solely on reading `pom.xml` text, as versions are often hidden in parent BOMs. You MUST actively run shell commands like `mvn dependency:tree` or `mvn help:evaluate -Dexpression=spring-boot.version -q -DforceStdout` to resolve exact inherited versions.
 
 **Transitive Dependencies:**
 - Parse lock files (pom.xml effective-pom, gradle.lockfile, package-lock.json, poetry.lock, go.sum, Gemfile.lock)
@@ -133,7 +134,7 @@ Identify ties to specific infrastructure:
 
 ## HTML Report Output
 
-After generating the SBOM report, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the SBOM report, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Executive summary card** with application name, primary stack, total components, critical risk count, and modernization urgency level
 - **SBOM table** as an interactive HTML table with sticky headers, EOL status badges (CRITICAL, HIGH, MEDIUM, LOW), license type, and component type
@@ -146,6 +147,7 @@ After generating the SBOM report, render the results as a self-contained HTML pa
 Write the HTML file to `./diagrams/monolith-sbom.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - Auto-detect language and build system — do not ask
 - Support polyglot monoliths (multiple languages in one system)
 - Check Dockerfiles for base image versions and flag outdated images

@@ -152,7 +152,7 @@ Generate comprehensive risk assessment:
 
 ## HTML Report Output
 
-After generating the risk assessment, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the risk assessment, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Executive summary card** with top modernization investment areas and key findings
 - **Risk quadrant visualization** as a CSS Grid 2x2 matrix with modules plotted by business value (y-axis) and fragility (x-axis), color-coded by quadrant
@@ -164,6 +164,7 @@ After generating the risk assessment, render the results as a self-contained HTM
 Write the HTML file to `./diagrams/business-risk-assessment.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - Use git log analysis when telemetry is unavailable — it is always available
 - Normalize metrics across different-sized modules (use per-LOC or per-file ratios)
 - Distinguish feature churn from bug-fix churn — both are informative but different

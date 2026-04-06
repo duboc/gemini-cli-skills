@@ -429,7 +429,7 @@ The report follows this structure:
 
 ## HTML Report Output
 
-After generating the transaction analysis, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the transaction analysis, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total procedures analyzed, transaction patterns found, cross-database transactions, isolation level 0 usages, distributed transactions, estimated conversion effort
 - **Transaction pattern distribution** as a Chart.js pie/donut chart showing chained vs unchained, read-write vs read-only, and OLTP vs batch patterns
@@ -442,6 +442,7 @@ After generating the transaction analysis, render the results as a self-containe
 Write the HTML file to `./diagrams/sybase-transaction-analyzer-report.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 
 - Always consume Phase 1 sybase-tsql-analyzer output if available in `./reports/`
 - Parse all stored procedure source (.sql, .prc, .sp files) for transaction patterns

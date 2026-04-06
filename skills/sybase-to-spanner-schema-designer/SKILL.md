@@ -574,7 +574,7 @@ The report follows this structure:
 
 ## HTML Report Output
 
-After generating the schema design, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the schema design, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: source tables, target tables, sequences, indexes, Change Streams, interleaving max depth
 - **Schema conversion table** as an interactive HTML table mapping each source table to its Spanner target with key strategy, interleaving parent, and index count
@@ -587,6 +587,7 @@ After generating the schema design, render the results as a self-contained HTML 
 Write the HTML file to `./diagrams/sybase-to-spanner-schema-designer-report.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 
 - NEVER use monotonically increasing keys as Spanner primary keys (creates write hotspots)
 - ALWAYS use BIT_REVERSED_POSITIVE sequences to replace Sybase IDENTITY columns

@@ -356,7 +356,7 @@ The report follows this structure:
 
 ## HTML Report Output
 
-After generating the data flow analysis, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the data flow analysis, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total databases analyzed, cross-database references found, proxy tables mapped, batch chains traced, recommended migration waves
 - **Cross-database dependency matrix** as an interactive heatmap showing reference counts between database pairs with coupling level color coding
@@ -369,6 +369,7 @@ After generating the data flow analysis, render the results as a self-contained 
 Write the HTML file to `./diagrams/sybase-data-flow-mapper-report.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 
 - Always check for Phase 1 outputs in `./reports/` before starting discovery from scratch
 - Parse all T-SQL source files (.sql, .prc, .sp) plus scheduler definitions

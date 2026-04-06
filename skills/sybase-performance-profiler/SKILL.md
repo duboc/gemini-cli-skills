@@ -418,7 +418,7 @@ The report follows this structure:
 
 ## HTML Report Output
 
-After generating the performance analysis, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the performance analysis, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total tables profiled, hot tables identified, interleaved candidates, secondary indexes recommended, Spanner nodes (min/max), peak TPS
 - **Table access pattern chart** as a Chart.js horizontal bar chart showing read/write ratio per table with classification badges (READ_HEAVY, WRITE_HEAVY, etc.)
@@ -431,6 +431,7 @@ After generating the performance analysis, render the results as a self-containe
 Write the HTML file to `./diagrams/sybase-performance-profiler-report.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 
 - Always check for Phase 1 outputs (sybase-schema-profiler) in `./reports/` before starting
 - Parse MDA table exports as CSV, JSON, or tab-delimited format

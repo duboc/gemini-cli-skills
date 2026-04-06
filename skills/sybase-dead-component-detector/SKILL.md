@@ -363,7 +363,7 @@ The report follows this structure:
 
 ## HTML Report Output
 
-After generating the dead component analysis, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the dead component analysis, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total objects inventoried, dead components by confidence (HIGH/MEDIUM/LOW), scope reduction percentage, estimated effort savings in person-days
 - **Dead component inventory table** as an interactive HTML table with confidence badges (HIGH=green for safe exclusion, MEDIUM=amber for review needed, LOW=red for insufficient evidence), object type icons, database grouping, and execution count
@@ -376,6 +376,7 @@ After generating the dead component analysis, render the results as a self-conta
 Write the HTML file to `./diagrams/sybase-dead-component-detector-report.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 
 - NEVER flag SOX audit code as dead without explicit confirmation from compliance team
 - NEVER flag regulatory reporting procedures as dead regardless of execution frequency

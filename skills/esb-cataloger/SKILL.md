@@ -69,7 +69,7 @@ Produce:
 
 ## HTML Report Output
 
-After generating the catalog, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the catalog, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total integrations, breakdown by protocol (SOAP, REST, JMS, etc.), breakdown by payload format
 - **Consumer/producer matrix** as an interactive HTML table with sticky headers, status badges for auth type and error handling
@@ -81,6 +81,7 @@ After generating the catalog, render the results as a self-contained HTML page u
 Write the HTML file to `./diagrams/esb-catalog.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - Auto-detect ESB platform from config file patterns
 - Support multi-vendor environments (some orgs run multiple ESBs)
 - Flag hardcoded credentials — never include actual secrets in output

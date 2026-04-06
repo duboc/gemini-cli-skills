@@ -47,6 +47,9 @@ Trace static references for each inventoried component:
 - Convention-over-configuration frameworks (e.g., Struts action mappings)
 - Annotation processors that generate code
 
+**Code Smells (Static Dead Code):**
+- **CRITICAL:** Actively search for commented-out blocks of code (e.g., `/* ... */` or multiple `//` lines), `@Deprecated` annotations without removal dates, and unused private methods. These are high-confidence dead code candidates.
+
 **Framework-Specific Patterns:**
 - Spring: `@ConditionalOnProperty`, `@Profile` -- may be active only in certain environments
 - Feature flags: Check for feature flag libraries (LaunchDarkly, Unleash, Togglz)
@@ -138,7 +141,7 @@ Mark such code as EXCLUDE with reason "compliance/audit" even if rarely executed
 
 ## HTML Report Output
 
-After generating the dead code analysis, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the dead code analysis, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total components inventoried, HIGH/MEDIUM/LOW confidence dead code counts, estimated removable lines, migration scope reduction percentage
 - **Dead code inventory table** as an interactive HTML table with confidence badges (HIGH=green for safe removal, MEDIUM=amber for review needed, LOW=red for investigation needed), component type, last modified date, and LOC
@@ -150,6 +153,7 @@ After generating the dead code analysis, render the results as a self-contained 
 Write the HTML file to `./diagrams/dead-code-report.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - NEVER mark reflection-accessed code as dead without a manual review flag
 - Check for seasonal code (year-end processing, quarterly reports, annual audits)
 - Flag test-only code separately -- it's not "dead" but may be testing dead code

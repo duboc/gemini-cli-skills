@@ -364,7 +364,7 @@ The report follows this structure:
 
 ## HTML Report Output
 
-After generating the markdown report, render the results as a self-contained HTML page. The HTML report should include:
+After generating the markdown report, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total tables, type mapping coverage percentage, hotspot risk count, interleave candidates
 - **Data type mapping table** with sortable columns and color-coded risk levels (Low=green, Medium=yellow, High=red)
@@ -376,6 +376,7 @@ After generating the markdown report, render the results as a self-contained HTM
 Write the HTML file to `./diagrams/sybase-schema-profile.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 
 - **Never execute SQL queries** against live databases. All analysis is static, based on DDL files and exported metadata.
 - **Resolve user-defined types** — always trace `sp_addtype` custom types back to their base Sybase types before mapping to Spanner.

@@ -209,7 +209,7 @@ Document performance expectations for DB-tier vs app-tier (Cloud Run) execution:
 
 ## HTML Report Output
 
-After generating the extraction plan, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the extraction plan, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total procedures to extract, procedures by tag, target services to create, API endpoints to generate
 - **Extraction summary table** as an interactive HTML table with procedure name, tag, target service, API endpoints, tables affected, and effort level badges
@@ -223,6 +223,7 @@ After generating the extraction plan, render the results as a self-contained HTM
 Write the HTML file to `./diagrams/storedproc-to-microservice.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - Preserve transactional guarantees — document where distributed transactions may be needed
 - Handle stored proc interdependencies — extract called procedures first
 - Generate idempotent migration scripts

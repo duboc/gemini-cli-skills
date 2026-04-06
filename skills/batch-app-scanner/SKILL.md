@@ -21,7 +21,7 @@ Scan for batch application indicators:
 | Spring Batch configs | `@EnableBatchProcessing`, `@Configuration` with Job/Step beans, `batch-*.xml` |
 | EJB descriptors | `ejb-jar.xml`, `@Stateless`, `@MessageDriven`, `@Schedule`, `@Timeout` |
 | Scheduler configs | `quartz.properties`, `quartz-jobs.xml`, `@Scheduled`, crontab files |
-| Enterprise schedulers | Control-M job definitions, Autosys JIL files, CA7 job cards, BMC job exports |
+| Enterprise schedulers | Control-M job definitions, Autosys JIL files, CA7 job cards, BMC job exports. **CRITICAL:** If no internal scheduling (`@Scheduled`, Quartz) is found, explicitly search for shell scripts (`.sh`, `.bat`) or JCL that wrap the Java execution, as this indicates an external enterprise scheduler (like UC4). |
 | App server configs | `server.xml` (WebSphere), `standalone.xml` (JBoss/WildFly), `weblogic.xml` |
 
 ### Step 2: Job Cataloging
@@ -112,7 +112,7 @@ Parse build files to identify:
 
 ## HTML Report Output
 
-After generating the inventory, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
+After generating the inventory, **CRITICAL:** Do NOT generate the HTML report in the same turn as the Markdown analysis to avoid context exhaustion. Only generate the HTML if explicitly requested in a separate turn. When requested, render the results as a self-contained HTML page using the `visual-explainer` skill. The HTML report should include:
 
 - **Dashboard header** with KPI cards: total jobs, breakdown by framework, jobs needing immediate attention, outdated dependency count
 - **Job catalog table** as an interactive HTML table with sticky headers, framework badges, schedule display, and risk level indicators
@@ -124,6 +124,7 @@ After generating the inventory, render the results as a self-contained HTML page
 Write the HTML file to `./diagrams/batch-inventory.html` and open it in the browser.
 
 ## Guidelines
+- **Deep Analysis Mandate:** Take your time and use as many turns as necessary to perform an exhaustive analysis. Do not rush. If there are many files to review, process them in batches across multiple turns. Prioritize depth, accuracy, and thoroughness over speed.
 - Auto-detect build system and batch framework
 - Parse cron expressions to human-readable format (e.g., `0 2 * * *` → "Daily at 2:00 AM")
 - Never execute batch jobs or connect to schedulers
