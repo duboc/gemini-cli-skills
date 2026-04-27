@@ -78,7 +78,22 @@ Ask: "What mood should the presentation convey?"
 | **Bold** | High contrast, strong claims, assertive |
 | **Calm** | Measured, reassuring, low-key authority |
 
-If the user says "you decide" or "surprise me," default to: **No images**, **Balanced** audience, **Professional** mood.
+#### Visual Theme
+
+Ask: "Would you like a specific visual theme?"
+
+| Option | Description |
+|--------|-------------|
+| **Google Cloud (Default)** | Standard gcloud styling — white technical / dark business slides |
+| **Executive Blue** | Formal, navy tones — best for board presentations |
+| **Data-Driven** | Teal and orange accents — best for analytics and metrics decks |
+| **Cloud Architecture** | Technical-focused — best for system design and architecture reviews |
+| **Innovation Pitch** | Violet and amber — best for proposals and new initiatives |
+| **Compliance & Security** | Conservative, trust blue — best for security reviews and audit decks |
+
+Refer to `references/visual-themes.md` for full theme specifications and frontmatter snippets.
+
+If the user says "you decide" or "surprise me," default to: **No images**, **Balanced** audience, **Professional** mood, **Google Cloud** theme.
 
 Record the user's choices and apply them consistently across all slides.
 
@@ -211,13 +226,21 @@ These rules are non-negotiable. Every slide must comply.
 - Use `#` (h1) only for the title slide and SCQA section dividers.
 - Italics (`*text*`) for supporting context or source attribution below the headline.
 
+### Diagrams as Evidence
+
+- Pre-render diagrams as SVG files using Mermaid CLI or mermaid.live.
+- Embed using `![](./diagram.svg)` below the assertion headline.
+- Technical slides: use architecture, data flow, or sequence diagrams.
+- Business slides: use process flow or impact diagrams.
+- MARP does not support Mermaid natively. See `references/diagram-guide.md` for workflows.
+
 ### Consistency
 
 - Maintain the same heading level (`##`) for assertion headlines across all content slides.
 - Maintain strict technical (white) → business (dark) alternation within the Answer section.
 - Keep the same evidence depth across all concept pairs (adjusted by audience balance setting).
 
-Refer to `references/assertion-evidence-guide.md` for headline writing rules, evidence types, and the falsifiability test. Refer to `references/dual-perspective-guide.md` for translation patterns and audience balance adaptation.
+Refer to `references/assertion-evidence-guide.md` for headline writing rules, evidence types, and the falsifiability test. Refer to `references/dual-perspective-guide.md` for translation patterns and audience balance adaptation. Refer to `references/visual-themes.md` for theme presets and dual-perspective color schemes. Refer to `references/diagram-guide.md` for embedding diagrams as visual evidence.
 
 ### Background Images (When Enabled)
 
@@ -256,7 +279,8 @@ The final output must be:
 | **Question slide** | Centered with `lead` class — only slide with a question mark |
 | **Falsifiability** | If no one would disagree with the headline, it's too vague |
 | **Output** | MARP Markdown → self-contained HTML → optional PowerPoint |
-| **Consultation** | Always ask about audience balance and mood first |
+| **Visual themes** | 6 presets in `references/visual-themes.md`, all preserve dual-perspective alternation |
+| **Consultation** | Always ask about audience balance, mood, and visual theme first |
 
 ## Guidelines
 

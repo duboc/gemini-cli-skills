@@ -48,6 +48,8 @@ The skill activates when you ask Gemini to create structured, dual-audience pres
 | **Dual Perspectives** | Technical (how) + business (why) translation patterns |
 | **MARP Markdown** | Frontmatter directives, themes, slide classes, export commands |
 | **Google Identity** | Google colors, Inter/Google Sans fonts, gradient bar accents |
+| **Visual Themes** | 6 presets with dual-perspective color schemes, CSS variable overrides, audience-adapted mood and accent colors |
+| **Diagrams** | Pre-rendered SVG embedding, Mermaid CLI workflow, Kroki URL rendering, diagrams as visual evidence for assertions |
 
 ## Installation
 
@@ -124,6 +126,7 @@ The skill includes a custom Marp CSS theme (`gcloud-theme.css`) styled after the
 - **Slide type classes** for visual variety: `title`, `section`, `lead`, `stats`, `quote`, `invert`, `closing`
 - **White/dark alternation** for distinguishing technical and business slides
 - Clean, professional look suitable for mixed audiences
+- **6 visual theme presets** (see `references/visual-themes.md`) that customize the gcloud base theme for specific use cases like executive reviews, data analytics, architecture decks, innovation pitches, and compliance assessments. All presets preserve the dual-perspective white/dark alternation pattern.
 
 ### Setting up the custom theme in VS Code
 
@@ -152,6 +155,8 @@ npx @marp-team/marp-cli@latest slides.md --pdf --theme ./gcloud-theme.css -o sli
 | **assertion-evidence-guide.md** | Sentence headline writing rules, evidence types, falsifiability test, good vs bad headline examples |
 | **scqa-framework-guide.md** | SCQA narrative structure, content mapping, 3 complete technical examples, anti-patterns |
 | **dual-perspective-guide.md** | 12+ technical-to-business translation patterns, audience balance adaptation, writing process for paired headlines |
+| **visual-themes.md** | 6 visual theme presets adapted for dual-perspective SCQA decks — Google Cloud, Executive Blue, Data-Driven, Cloud Architecture, Innovation Pitch, Compliance & Security |
+| **diagram-guide.md** | Diagram embedding workflows — pre-rendered SVG, Kroki URLs, Mermaid CLI, diagrams as assertion evidence |
 
 ## Included Assets
 

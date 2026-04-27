@@ -35,6 +35,7 @@ The skill activates when you ask Gemini to create presentations, slides, or deck
 | **Story Structure** | Narrative arcs, audience adaptation, hook-tension-climax-resolution |
 | **Google Identity** | Google colors (blue, red, yellow, green), Inter/Google Sans fonts, gradient bar accents |
 | **Background Images** | Optional — user chooses whether to use full-bleed Unsplash images or clean theme-based design |
+| **Diagrams** | Pre-rendered SVG embedding, Mermaid CLI workflow, Kroki URL rendering, minimal diagram guidelines |
 
 ## Installation
 
@@ -136,6 +137,7 @@ npx @marp-team/marp-cli@latest slides.md --pdf --theme ./gcloud-theme.css -o sli
 | **marp-syntax-guide.md** | Complete MARP Markdown syntax reference — frontmatter, background images, filters, themes, custom themes, export commands |
 | **zen-design-principles.md** | Presentation Zen philosophy — restraint, naturalness, emptiness, visual metaphor guide, story arc structure |
 | **visual-themes.md** | Visual theme presets and slide type class reference |
+| **diagram-guide.md** | Diagram embedding workflows — pre-rendered SVG, Kroki URLs, Mermaid CLI, style guidelines for minimal diagrams |
 
 ## Included Assets
 

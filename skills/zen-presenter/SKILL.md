@@ -204,13 +204,20 @@ These rules are non-negotiable. Every slide must comply.
   - Topic "growth" → keyword `seedling` or `sunrise`, not `growth`.
   - Topic "data" → keyword `constellation` or `river`, not `data`.
 
+### Diagrams (When Applicable)
+
+- Diagrams should be pre-rendered as SVG files and embedded using `![bg contain](./diagram.svg)` or `![](./diagram.svg)`.
+- Keep diagrams minimal: maximum 3-4 nodes, consistent with Zen restraint.
+- MARP does not support Mermaid natively. Use Mermaid CLI or mermaid.live to render SVGs before building the deck.
+- Refer to `references/diagram-guide.md` for detailed workflows and examples.
+
 ### Consistency
 
 - When using images: maintain the same brightness level across all slides.
 - Maintain the same text color throughout (do not alternate), except when using slide type classes that define their own colors (e.g., `section`, `invert`).
 - Keep the same heading level for slide text across the deck.
 
-Refer to `references/marp-syntax-guide.md` for MARP formatting details, `references/zen-design-principles.md` for deeper Presentation Zen philosophy, and `references/visual-themes.md` for theme presets.
+Refer to `references/marp-syntax-guide.md` for MARP formatting details, `references/zen-design-principles.md` for deeper Presentation Zen philosophy, `references/visual-themes.md` for theme presets, and `references/diagram-guide.md` for embedding diagrams.
 
 ## Output Format
 
