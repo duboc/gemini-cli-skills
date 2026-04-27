@@ -42,24 +42,67 @@ function cssColorToHex(cssColor) {
     return null;
   }
 
-  // Already hex
   if (cssColor.startsWith('#')) {
-    return cssColor.replace('#', '').substring(0, 6).toUpperCase();
+    const hex = cssColor.replace('#', '');
+    if (hex.length === 3) {
+      return (hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2]).toUpperCase();
+    }
+    return hex.substring(0, 6).toUpperCase();
   }
 
-  // rgb(r, g, b) or rgba(r, g, b, a)
-  const match = cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-  if (match) {
-    const r = parseInt(match[1]).toString(16).padStart(2, '0');
-    const g = parseInt(match[2]).toString(16).padStart(2, '0');
-    const b = parseInt(match[3]).toString(16).padStart(2, '0');
+  const rgbMatch = cssColor.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+  if (rgbMatch) {
+    const r = parseInt(rgbMatch[1]).toString(16).padStart(2, '0');
+    const g = parseInt(rgbMatch[2]).toString(16).padStart(2, '0');
+    const b = parseInt(rgbMatch[3]).toString(16).padStart(2, '0');
     return (r + g + b).toUpperCase();
   }
 
-  // Named colors fallback
+  const hslMatch = cssColor.match(/hsla?\((\d+),\s*(\d+)%?,\s*(\d+)%?/);
+  if (hslMatch) {
+    let h = parseInt(hslMatch[1]) / 360;
+    let s = parseInt(hslMatch[2]) / 100;
+    let l = parseInt(hslMatch[3]) / 100;
+    let r, g, b;
+    if (s === 0) {
+      r = g = b = l;
+    } else {
+      const hue2rgb = (p, q, t) => {
+        if (t < 0) t += 1;
+        if (t > 1) t -= 1;
+        if (t < 1/6) return p + (q - p) * 6 * t;
+        if (t < 1/2) return q;
+        if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+        return p;
+      };
+      const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+      const p = 2 * l - q;
+      r = hue2rgb(p, q, h + 1/3);
+      g = hue2rgb(p, q, h);
+      b = hue2rgb(p, q, h - 1/3);
+    }
+    const toHex = v => Math.round(v * 255).toString(16).padStart(2, '0');
+    return (toHex(r) + toHex(g) + toHex(b)).toUpperCase();
+  }
+
   const named = {
     'white': 'FFFFFF', 'black': '000000', 'red': 'FF0000',
-    'blue': '0000FF', 'green': '008000', 'yellow': 'FFFF00'
+    'blue': '0000FF', 'green': '008000', 'yellow': 'FFFF00',
+    'gray': '808080', 'grey': '808080',
+    'darkgray': 'A9A9A9', 'darkgrey': 'A9A9A9',
+    'lightgray': 'D3D3D3', 'lightgrey': 'D3D3D3',
+    'orange': 'FFA500', 'purple': '800080', 'navy': '000080',
+    'teal': '008080', 'cyan': '00FFFF', 'aqua': '00FFFF',
+    'magenta': 'FF00FF', 'fuchsia': 'FF00FF', 'pink': 'FFC0CB',
+    'maroon': '800000', 'olive': '808000', 'silver': 'C0C0C0',
+    'coral': 'FF7F50', 'salmon': 'FA8072', 'gold': 'FFD700',
+    'tomato': 'FF6347', 'chocolate': 'D2691E',
+    'darkblue': '00008B', 'darkgreen': '006400', 'darkred': '8B0000',
+    'whitesmoke': 'F5F5F5', 'slategray': '708090', 'slategrey': '708090',
+    'dimgray': '696969', 'dimgrey': '696969',
+    'steelblue': '4682B4', 'royalblue': '4169E1',
+    'cornflowerblue': '6495ED', 'rebeccapurple': '663399',
+    'indigo': '4B0082', 'crimson': 'DC143C'
   };
   return named[cssColor.toLowerCase()] || COLORS.grey900;
 }
@@ -109,15 +152,35 @@ function cleanFont(fontFamily) {
   if (!fontFamily) return 'Arial';
   // Extract first font, strip quotes
   const first = fontFamily.split(',')[0].trim().replace(/['"]/g, '');
-  // Map to PowerPoint-safe fonts
   const fontMap = {
     'Inter': 'Arial',
     'Google Sans': 'Arial',
+    'Google Sans Text': 'Arial',
     'Roboto': 'Arial',
     'Helvetica': 'Arial',
+    'Helvetica Neue': 'Arial',
     'sans-serif': 'Arial',
     'monospace': 'Courier New',
-    'Courier': 'Courier New'
+    'Courier': 'Courier New',
+    'Courier New': 'Courier New',
+    'Source Code Pro': 'Courier New',
+    'Fira Code': 'Courier New',
+    'JetBrains Mono': 'Courier New',
+    'Consolas': 'Courier New',
+    'Menlo': 'Courier New',
+    'Lato': 'Calibri',
+    'Open Sans': 'Calibri',
+    'Noto Sans': 'Calibri',
+    'Segoe UI': 'Calibri',
+    'Source Sans Pro': 'Calibri',
+    'Nunito': 'Calibri',
+    'Poppins': 'Calibri',
+    'Georgia': 'Georgia',
+    'Times New Roman': 'Times New Roman',
+    'serif': 'Times New Roman',
+    'Merriweather': 'Georgia',
+    'Playfair Display': 'Georgia',
+    'Noto Serif': 'Georgia'
   };
   return fontMap[first] || first;
 }
@@ -125,9 +188,11 @@ function cleanFont(fontFamily) {
 /**
  * Download an image URL to a local buffer (for embedding in PPTX)
  */
-function downloadImage(url) {
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_REDIRECTS = 5;
+
+function downloadImage(url, depth = 0) {
   return new Promise((resolve, reject) => {
-    // Handle data URIs
     if (url.startsWith('data:')) {
       const matches = url.match(/^data:([^;]+);base64,(.+)$/);
       if (matches) {
@@ -138,7 +203,6 @@ function downloadImage(url) {
       return;
     }
 
-    // Handle file:// URIs
     if (url.startsWith('file://')) {
       const filePath = url.replace('file://', '');
       fs.readFile(filePath, (err, data) => {
@@ -148,17 +212,66 @@ function downloadImage(url) {
       return;
     }
 
+    if (depth > MAX_REDIRECTS) {
+      reject(new Error(`Too many redirects (>${MAX_REDIRECTS})`));
+      return;
+    }
+
     const client = url.startsWith('https') ? https : http;
-    client.get(url, { timeout: 10000 }, (res) => {
+    const req = client.get(url, { timeout: 10000 }, (res) => {
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        downloadImage(res.headers.location).then(resolve).catch(reject);
+        res.resume();
+        downloadImage(res.headers.location, depth + 1).then(resolve).catch(reject);
         return;
       }
+
+      if (res.statusCode >= 400) {
+        res.resume();
+        reject(new Error(`HTTP ${res.statusCode} for ${url}`));
+        return;
+      }
+
+      const contentType = res.headers['content-type'] || '';
+      if (contentType && !contentType.startsWith('image/') && !contentType.startsWith('application/octet-stream')) {
+        res.resume();
+        reject(new Error(`Unexpected content-type: ${contentType}`));
+        return;
+      }
+
+      const contentLength = parseInt(res.headers['content-length'] || '0');
+      if (contentLength > MAX_IMAGE_SIZE) {
+        res.resume();
+        reject(new Error(`Image too large: ${contentLength} bytes (max ${MAX_IMAGE_SIZE})`));
+        return;
+      }
+
+      let totalSize = 0;
       const chunks = [];
-      res.on('data', chunk => chunks.push(chunk));
-      res.on('end', () => resolve(Buffer.concat(chunks)));
-      res.on('error', reject);
-    }).on('error', reject);
+      const bodyTimeout = setTimeout(() => {
+        res.destroy();
+        reject(new Error('Response body timeout (30s)'));
+      }, 30000);
+
+      res.on('data', chunk => {
+        totalSize += chunk.length;
+        if (totalSize > MAX_IMAGE_SIZE) {
+          res.destroy();
+          clearTimeout(bodyTimeout);
+          reject(new Error(`Image too large during download (max ${MAX_IMAGE_SIZE} bytes)`));
+          return;
+        }
+        chunks.push(chunk);
+      });
+      res.on('end', () => {
+        clearTimeout(bodyTimeout);
+        resolve(Buffer.concat(chunks));
+      });
+      res.on('error', (err) => {
+        clearTimeout(bodyTimeout);
+        reject(err);
+      });
+    });
+    req.on('error', reject);
   });
 }
 
@@ -167,56 +280,51 @@ function downloadImage(url) {
  */
 function buildTextRuns(element, defaultColor) {
   const color = cssColorToHex(element.color) || defaultColor;
+  const fontSize = pxToPt(element.fontSize);
+  const fontFace = cleanFont(element.fontFamily);
+  const baseBold = isBold(element.fontWeight);
+  const baseItalic = element.isItalic || element.fontStyle === 'italic';
   const runs = [];
 
-  if (element.hasAccent && element.accentText && element.text) {
-    // Split text around the accent portion
+  const makeRun = (text, opts = {}) => ({
+    text,
+    options: {
+      fontSize,
+      fontFace,
+      color: opts.color || color,
+      bold: opts.bold !== undefined ? opts.bold : baseBold,
+      italic: opts.italic !== undefined ? opts.italic : baseItalic
+    }
+  });
+
+  if (element.accents && element.accents.length > 0 && element.text) {
+    let remaining = element.text;
+    for (const accent of element.accents) {
+      const idx = remaining.indexOf(accent.text);
+      if (idx === -1) continue;
+      if (idx > 0) {
+        runs.push(makeRun(remaining.substring(0, idx)));
+      }
+      runs.push(makeRun(accent.text, {
+        color: cssColorToHex(accent.color) || COLORS.blue,
+        bold: accent.tag === 'strong' ? true : baseBold,
+        italic: accent.tag === 'em' ? true : baseItalic
+      }));
+      remaining = remaining.substring(idx + accent.text.length);
+    }
+    if (remaining) {
+      runs.push(makeRun(remaining));
+    }
+  } else if (element.hasAccent && element.accentText && element.text) {
     const parts = element.text.split(element.accentText);
-    if (parts[0]) {
-      runs.push({
-        text: parts[0],
-        options: {
-          fontSize: pxToPt(element.fontSize),
-          fontFace: cleanFont(element.fontFamily),
-          color: color,
-          bold: isBold(element.fontWeight),
-          italic: element.isItalic || element.fontStyle === 'italic'
-        }
-      });
-    }
-    runs.push({
-      text: element.accentText,
-      options: {
-        fontSize: pxToPt(element.fontSize),
-        fontFace: cleanFont(element.fontFamily),
-        color: cssColorToHex(element.accentColor) || COLORS.blue,
-        bold: true,
-        italic: element.isItalic || element.fontStyle === 'italic'
-      }
-    });
-    if (parts[1]) {
-      runs.push({
-        text: parts[1],
-        options: {
-          fontSize: pxToPt(element.fontSize),
-          fontFace: cleanFont(element.fontFamily),
-          color: color,
-          bold: isBold(element.fontWeight),
-          italic: element.isItalic || element.fontStyle === 'italic'
-        }
-      });
-    }
+    if (parts[0]) runs.push(makeRun(parts[0]));
+    runs.push(makeRun(element.accentText, {
+      color: cssColorToHex(element.accentColor) || COLORS.blue,
+      bold: true
+    }));
+    if (parts[1]) runs.push(makeRun(parts[1]));
   } else {
-    runs.push({
-      text: element.text || '',
-      options: {
-        fontSize: pxToPt(element.fontSize),
-        fontFace: cleanFont(element.fontFamily),
-        color: color,
-        bold: isBold(element.fontWeight),
-        italic: element.isItalic || element.fontStyle === 'italic'
-      }
-    });
+    runs.push(makeRun(element.text || ''));
   }
 
   return runs;
@@ -253,7 +361,7 @@ async function buildPresentation(inputPath, outputPath) {
 
     // --- Set slide background ---
     const bgHex = cssColorToHex(slideData.background.color);
-    if (bgHex && bgHex !== 'FFFFFF' && bgHex !== '000000' ||
+    if ((bgHex && bgHex !== 'FFFFFF' && bgHex !== '000000') ||
         (bgHex === '000000' && slideData.class.includes('invert'))) {
       slide.background = { color: bgHex };
     }
@@ -343,22 +451,31 @@ async function buildPresentation(inputPath, outputPath) {
 
         case 'unordered-list':
         case 'ordered-list': {
-          const listRows = el.items.map((item, idx) => {
-            const itemColor = cssColorToHex(item.color) || defaultTextColor;
-            return {
-              text: item.text,
-              options: {
-                fontSize: pxToPt(item.fontSize || el.fontSize),
-                fontFace: cleanFont(el.fontFamily),
-                color: itemColor,
-                bullet: el.type === 'unordered-list'
-                  ? { type: 'bullet', color: cssColorToHex(el.bulletColor) || COLORS.blue }
-                  : { type: 'number', color: itemColor },
-                indentLevel: 0,
-                bold: item.hasAccent || false
+          function flattenItems(items, isUnordered) {
+            const flat = [];
+            for (const item of items) {
+              const itemColor = cssColorToHex(item.color) || defaultTextColor;
+              const depth = item.depth || 0;
+              flat.push({
+                text: item.text,
+                options: {
+                  fontSize: pxToPt(item.fontSize || el.fontSize),
+                  fontFace: cleanFont(el.fontFamily),
+                  color: itemColor,
+                  bullet: isUnordered
+                    ? { type: 'bullet', code: depth > 0 ? '25CB' : '25CF', color: cssColorToHex(el.bulletColor) || COLORS.blue }
+                    : { type: 'number', color: itemColor },
+                  indentLevel: Math.min(depth, 4),
+                  bold: item.hasAccent || false
+                }
+              });
+              if (item.subItems && item.subItems.length > 0) {
+                flat.push(...flattenItems(item.subItems, isUnordered));
               }
-            };
-          });
+            }
+            return flat;
+          }
+          const listRows = flattenItems(el.items, el.type === 'unordered-list');
           slide.addText(listRows, {
             x: safeX,
             y: y,
@@ -457,26 +574,33 @@ async function buildPresentation(inputPath, outputPath) {
 
         case 'table': {
           if (el.rows && el.rows.length > 0) {
+            let totalCols = 0;
+            for (const cell of el.rows[0]) {
+              totalCols += (cell.colspan || 1);
+            }
+            const tableFontSize = Math.max(10, Math.min(14, pxToPt(el.fontSize)));
             const tableRows = el.rows.map(row =>
-              row.map(cell => ({
-                text: cell.text,
-                options: {
-                  fontSize: 10,
+              row.map(cell => {
+                const cellOpts = {
+                  fontSize: tableFontSize,
                   fontFace: 'Arial',
                   color: cssColorToHex(cell.color) || defaultTextColor,
                   bold: cell.isHeader || isBold(cell.fontWeight),
                   fill: cell.isHeader
                     ? { color: COLORS.grey100 }
                     : (cssColorToHex(cell.backgroundColor) ? { color: cssColorToHex(cell.backgroundColor) } : undefined)
-                }
-              }))
+                };
+                if (cell.colspan && cell.colspan > 1) cellOpts.colspan = cell.colspan;
+                if (cell.rowspan && cell.rowspan > 1) cellOpts.rowspan = cell.rowspan;
+                return { text: cell.text, options: cellOpts };
+              })
             );
             slide.addTable(tableRows, {
               x: safeX,
               y: y,
               w: safeW,
               border: { pt: 0.5, color: COLORS.grey200 },
-              colW: Array(el.rows[0].length).fill(safeW / el.rows[0].length),
+              colW: Array(totalCols).fill(safeW / totalCols),
               autoPage: false
             });
           }

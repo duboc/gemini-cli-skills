@@ -115,12 +115,16 @@
             type: 'heading',
             level: parseInt(el.tagName[1]),
             text: el.innerText.trim(),
-            // Check for bold spans (MARP uses <strong> for accent)
             hasAccent: el.querySelector('strong') !== null,
             accentText: el.querySelector('strong')?.innerText || null,
             accentColor: el.querySelector('strong')
               ? window.getComputedStyle(el.querySelector('strong')).color
-              : null
+              : null,
+            accents: Array.from(el.querySelectorAll('strong, em')).map(span => ({
+              text: span.innerText,
+              tag: span.tagName.toLowerCase(),
+              color: window.getComputedStyle(span).color
+            }))
           });
           break;
 
@@ -142,30 +146,45 @@
               ...baseData,
               type: 'text',
               text: el.innerText.trim(),
-              // Detect italic (MARP uses <em> for secondary text)
               isItalic: el.querySelector('em') !== null || styles.fontStyle === 'italic',
               hasAccent: el.querySelector('strong') !== null,
               accentText: el.querySelector('strong')?.innerText || null,
               accentColor: el.querySelector('strong')
                 ? window.getComputedStyle(el.querySelector('strong')).color
-                : null
+                : null,
+              accents: Array.from(el.querySelectorAll('strong, em')).map(span => ({
+                text: span.innerText,
+                tag: span.tagName.toLowerCase(),
+                color: window.getComputedStyle(span).color
+              }))
             });
           }
           break;
 
         case 'ul':
         case 'ol':
-          const items = Array.from(el.querySelectorAll(':scope > li')).map(li => {
-            const liStyles = window.getComputedStyle(li);
-            const bullet = li.querySelector('::before');
-            return {
-              text: li.innerText.trim(),
-              color: liStyles.color,
-              fontSize: parseFloat(liStyles.fontSize),
-              hasAccent: li.querySelector('strong') !== null,
-              accentText: li.querySelector('strong')?.innerText || null
-            };
-          });
+          function extractListItems(listEl, depth) {
+            if (depth > 2) return [];
+            return Array.from(listEl.querySelectorAll(':scope > li')).map(li => {
+              const liStyles = window.getComputedStyle(li);
+              const nestedList = li.querySelector(':scope > ul, :scope > ol');
+              const directText = Array.from(li.childNodes)
+                .filter(n => n.nodeType === 3 || (n.nodeType === 1 && !['UL', 'OL'].includes(n.tagName)))
+                .map(n => n.textContent)
+                .join('')
+                .trim();
+              return {
+                text: directText || li.innerText.trim(),
+                color: liStyles.color,
+                fontSize: parseFloat(liStyles.fontSize),
+                hasAccent: li.querySelector(':scope > strong, :scope > em') !== null,
+                accentText: li.querySelector(':scope > strong')?.innerText || null,
+                depth: depth,
+                subItems: nestedList ? extractListItems(nestedList, depth + 1) : []
+              };
+            });
+          }
+          const items = extractListItems(el, 0);
           slideData.elements.push({
             ...baseData,
             type: el.tagName.toLowerCase() === 'ul' ? 'unordered-list' : 'ordered-list',
@@ -209,7 +228,9 @@
               isHeader: cell.tagName.toLowerCase() === 'th',
               color: window.getComputedStyle(cell).color,
               backgroundColor: window.getComputedStyle(cell).backgroundColor,
-              fontWeight: window.getComputedStyle(cell).fontWeight
+              fontWeight: window.getComputedStyle(cell).fontWeight,
+              colspan: parseInt(cell.getAttribute('colspan') || '1'),
+              rowspan: parseInt(cell.getAttribute('rowspan') || '1')
             }));
           });
           slideData.elements.push({

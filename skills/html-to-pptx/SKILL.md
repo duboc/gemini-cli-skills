@@ -81,7 +81,7 @@ node <skill-directory>/scripts/build_pptx.js /tmp/slides_data.json <output_filen
 
 The build script:
 - Maps pixel coordinates to PowerPoint inches (10" × 5.625" for 16:9)
-- Converts CSS colors to PowerPoint hex colors
+- Converts CSS colors to PowerPoint hex (supports hex, rgb, rgba, hsl, hsla, and named colors)
 - Creates native text boxes with proper font, size, color, and alignment
 - Builds bullet lists with colored bullets (Google identity blue)
 - Embeds images as base64 data (downloads remote URLs)
@@ -105,7 +105,7 @@ The build script:
 |-------|----------|
 | `agent-browser` not available | Tell the user to enable the browser tool or install Playwright |
 | No slides found in HTML | Check if the HTML is valid MARP output; suggest re-rendering with `marp-cli` |
-| Image download fails | Skip the image, add a text placeholder `[Image: alt text]`, warn the user |
+| Image download fails | Skip the image, add a text placeholder `[Image: alt text]`, warn the user. Downloads are limited to 10MB and 5 redirects |
 | `node` or `npm` not available | Tell the user to install Node.js (v18+) |
 | Complex SVG elements | Use screenshot fallback, warn that the SVG won't be editable |
 
@@ -117,11 +117,11 @@ The build script:
 | `<p>` | Text box | Yes |
 | `<strong>` | Bold text with accent color | Yes |
 | `<em>` | Italic text | Yes |
-| `<ul>`, `<ol>` | Bulleted/numbered list | Yes |
+| `<ul>`, `<ol>` | Bulleted/numbered list (nested up to 3 levels) | Yes |
 | `<blockquote>` | Text box with left accent bar | Yes |
 | `<pre><code>` | Code block with dark background | Yes |
 | `<img>` | Embedded image | Resizable |
-| `<table>` | Native PowerPoint table | Yes |
+| `<table>` | Native PowerPoint table (with colspan/rowspan) | Yes |
 | `<svg>` | Screenshot fallback | No (raster) |
 | Slide background color | Slide background fill | Yes |
 | Background image | Slide background image | Replaceable |

@@ -27,11 +27,11 @@ The skill activates when you ask Gemini to convert HTML slides to PowerPoint:
 | `<h1>`-`<h6>` | Text box with heading font size | Yes |
 | `<p>` | Text box | Yes |
 | `<strong>` / `<em>` | Bold / italic text | Yes |
-| `<ul>`, `<ol>` | Bulleted / numbered list | Yes |
+| `<ul>`, `<ol>` | Bulleted / numbered list (nested up to 3 levels) | Yes |
 | `<blockquote>` | Text box with accent bar | Yes |
 | `<pre><code>` | Code block (dark bg, monospace) | Yes |
 | `<img>` | Embedded image | Resizable |
-| `<table>` | Native PowerPoint table | Yes |
+| `<table>` | Native PowerPoint table (colspan/rowspan) | Yes |
 | `<svg>` | Screenshot fallback | No |
 | Slide backgrounds | Slide background fill / image | Yes |
 | Google gradient bar | Colored rectangles | Yes |
@@ -106,6 +106,6 @@ Convert all the .html files in the slides/ directory to a single PowerPoint.
 
 | File | Description |
 |------|-------------|
-| **extract.js** | Browser-side DOM extraction script — reads MARP slide structure, element positions, computed styles, text content, and images |
-| **build_pptx.js** | Node.js script that converts extracted JSON to PowerPoint using PptxGenJS — maps coordinates, colors, fonts, and builds native elements |
+| **extract.js** | Browser-side DOM extraction script — reads MARP slide structure, element positions, computed styles, text content, images, nested lists, and table spans |
+| **build_pptx.js** | Node.js script that converts extracted JSON to PowerPoint using PptxGenJS — maps coordinates, supports HSL/named colors, nested lists, colspan/rowspan tables, multiple inline styles, and hardened image downloads |
 | **package.json** | Dependencies (PptxGenJS) |
